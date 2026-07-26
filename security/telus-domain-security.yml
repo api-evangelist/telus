@@ -1,0 +1,27 @@
+generated: '2026-07-25'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.telus.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 24 10:42:38 2026 GMT
+  hsts: null
+- host: docs.insights.telus.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 15 14:44:07 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: location-api.insights.telus.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  9 17:17:43 2026 GMT
+  hsts: null
+domains:
+- domain: telus.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject

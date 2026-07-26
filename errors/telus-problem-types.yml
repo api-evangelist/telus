@@ -1,0 +1,110 @@
+generated: '2026-07-25'
+method: derived
+source: >-
+  collections/telus-insights-location-api.postman_collection.json — every documented example
+  response on all 27 Insights operations — enriched from https://docs.insights.telus.com/ and, for
+  the GraphQL surface, from https://help.inputhealth.com/en/collections/3317215-chr-enterprise-api.
+format: http-status
+rfc9457: false
+description: >-
+  TELUS publishes no RFC 9457 problem+json contract and no numbered error registry on either API.
+  What it does publish are per-operation example responses in the Insights Postman collection, which
+  give a complete and honest status-code catalogue, plus the Kong gateway's own error body for
+  unrouted paths. The CHR Enterprise API is GraphQL and therefore returns field-level failures in
+  the standard `errors` array with HTTP 200.
+
+envelopes:
+- api: TELUS Insights Location API
+  layer: application
+  shape: JSON object returned by the Insights service
+  content_type: application/json
+- api: TELUS Insights Location API
+  layer: gateway
+  shape: '{"message": "...", "request_id": "..."}'
+  example: '{"message":"no Route matched with those values","request_id":"c64e6020b1606a02544b4251d3980369"}'
+  emitted_by: Kong API gateway, for any path outside /product/insightsRequest/v1
+  observed: 2026-07-25
+- api: TELUS Insights Location API
+  layer: gateway
+  shape: '{"message":"Unauthorized"}'
+  emitted_by: Kong, for any in-route path without a valid bearer token
+  observed: 2026-07-25
+- api: TELUS Health CHR Enterprise API
+  layer: application
+  shape: 'GraphQL response object: {"data": ..., "errors": [{"message": ...}]}'
+  http_status_on_field_error: 200
+
+problems:
+- status: 202
+  title: Accepted — job created / still processing
+  meaning: >-
+    On POST /count/{type} the job was enqueued and the body carries jobId and a link to the status
+    resource. On GET /count/{type}/{jobId} and GET /shapefile/{requestId} it means the job is still
+    running ("Request was accepted and being processed on", status "Processing").
+  retryable: true
+  remediation: Poll the status resource; wait at least 5 minutes between GETs until status == "COMPLETE".
+  source_operations: ['POST /count/*', 'GET /count/*/{jobId}', 'GET /shapefile/{requestId}']
+- status: 206
+  title: Partial Content — paginated list
+  meaning: The successful response shape for the paginated list endpoints.
+  retryable: false
+  remediation: Follow limit/offset to walk the remaining pages.
+  source_operations: ['GET /job', 'GET /shapefile']
+- status: 400
+  title: Invalid Input
+  meaning: >-
+    Request body or parameters failed validation before the long-running job started. On
+    POST /shapefile it is documented specifically as "Invalid shapefile. The shapefile could not be
+    opened with GDAL api. At this point there is not request object made, so no request Id."
+  retryable: false
+  remediation: >-
+    Correct the request. Common causes are a malformed shapefile, a study_zone name containing
+    backslashes or quotation marks, a time_bucket_size below the endpoint minimum (Demographic
+    requires >= 1440), a dwell-time window narrower than 15 minutes, or start_time earlier than
+    2019-01-01T00:00:00.
+  source_operations: ['POST /shapefile', 'POST /count/*', 'GET /count/*/{jobId}', 'GET /geofence', 'DELETE /job/{jobid}', 'PATCH /job/{jobid}/cancel', 'DELETE /shapefile/{requestId}']
+- status: 401
+  title: Unauthorized
+  meaning: Missing, expired or invalid OAuth 2.0 bearer token, or a missing customerId header.
+  retryable: true
+  remediation: >-
+    Re-request an access token from the token endpoint on the Insights Portal My Account page and
+    reuse it for its 299-second lifetime; always send the customerId header alongside it.
+  source_operations: [every Insights operation]
+- status: 404
+  title: Resource not found
+  meaning: >-
+    The referenced jobId does not exist for this customer (documented on every count GET, on
+    POST /count/unique and on GET /usage). At the gateway layer, also returned for any path outside
+    the /product/insightsRequest/v1 route with the Kong "no Route matched with those values" body.
+  retryable: false
+  remediation: Verify the jobId returned by the POST and that the job has not been deleted.
+  source_operations: ['GET /count/*/{jobId}', 'POST /count/unique', 'GET /usage']
+- status: 412
+  title: Precondition Failed — invalid shapefile
+  meaning: >-
+    "Invalid shapefile. Please validate and upload the shapefile again. Make sure the boundaries are
+    well defined. This error happens if the GIS technician finds out the shapefile is invalid.
+    Therefore the request Id is available."
+  retryable: false
+  remediation: >-
+    Fix the geometry and re-upload. Constraints: .kml/.zip(ESRI)/.json, max 25 MB, max 2000 study
+    zones, file name <= 75 chars, study-zone name <= 50 chars and unique, two-dimensional
+    coordinates only.
+  source_operations: ['GET /shapefile/{requestId}']
+
+graphql_errors:
+  api: TELUS Health CHR Enterprise API
+  transport_status: 200
+  envelope_field: errors
+  note: >-
+    The CHR help centre documents no enumerated error-code registry. Business-rule rejections
+    (booking outside a provider's working hours, booking-time constraints, archived records) surface
+    as GraphQL errors, and authentication failures surface at the transport layer when the RS512
+    JWT is missing, expired beyond its 15-minute ceiling, or signed by a key that does not match the
+    registered API Consumer public key.
+
+not_published:
+  numbered_error_registry: false
+  problem_json: false
+  error_reference_page: false

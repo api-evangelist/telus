@@ -1,0 +1,221 @@
+generated: '2026-07-25'
+method: searched
+source: >-
+  npm registry search across the @telus, @telus-uds, @telusdigital and @telus-health-chr scopes on
+  2026-07-25; PyPI, Maven Central, NuGet, RubyGems, pkg.go.dev, Packagist and crates.io checked for
+  TELUS API client libraries.
+description: >-
+  TELUS publishes real, actively maintained first-party npm packages — but none of them is an API
+  client. Everything under the @telus-uds scope is the Universal Design System (palettes, themes and
+  React/React-Native component libraries for TELUS, Koodo and Public Mobile), and everything under
+  the older @telus scope is internal engineering tooling. Neither publicly documented TELUS API has
+  a client SDK in any language: the Insights Location API ships shell/curl snippets only, and the
+  CHR Enterprise API expects the consumer to use any standard GraphQL client. That absence is the
+  finding, not an omission.
+
+api_client_sdks:
+  count: 0
+  note: >-
+    No first-party client library exists on npm, PyPI, Maven Central, NuGet, RubyGems, pkg.go.dev,
+    Packagist or crates.io for the TELUS Insights Location API or the TELUS Health CHR Enterprise
+    API. No `SDKs` pointer is wired in apis.yml, because wiring one would misrepresent a design
+    system as an API client.
+
+packages:
+- language: javascript
+  registry: npm
+  name: '@telus-uds/components-base'
+  url: https://www.npmjs.com/package/@telus-uds/components-base
+  install: npm install @telus-uds/components-base
+  version_observed: 4.1.0
+  last_published: '2026-07-14'
+  official: true
+  category: design-system
+  api_client: false
+  description: Themable, atomic React Native base components that also render on web.
+- language: javascript
+  registry: npm
+  name: '@telus-uds/components-web'
+  url: https://www.npmjs.com/package/@telus-uds/components-web
+  install: npm install @telus-uds/components-web
+  version_observed: 5.1.0
+  last_published: '2026-07-14'
+  official: true
+  category: design-system
+  api_client: false
+  description: UDS multi-brand web components.
+- language: javascript
+  registry: npm
+  name: '@telus-uds/ds-allium'
+  url: https://www.npmjs.com/package/@telus-uds/ds-allium
+  install: npm install @telus-uds/ds-allium
+  version_observed: 2.2.14
+  official: true
+  category: design-system
+  api_client: false
+  description: Component library for the TELUS (Allium) brand.
+- language: javascript
+  registry: npm
+  name: '@telus-uds/palette-allium'
+  url: https://www.npmjs.com/package/@telus-uds/palette-allium
+  install: npm install @telus-uds/palette-allium
+  version_observed: 6.1.0
+  last_published: '2026-07-14'
+  official: true
+  category: design-system
+  api_client: false
+- language: javascript
+  registry: npm
+  name: '@telus-uds/theme-allium'
+  url: https://www.npmjs.com/package/@telus-uds/theme-allium
+  install: npm install @telus-uds/theme-allium
+  version_observed: 8.1.0
+  last_published: '2026-07-14'
+  official: true
+  category: design-system
+  api_client: false
+- language: javascript
+  registry: npm
+  name: '@telus-uds/palette-koodo'
+  url: https://www.npmjs.com/package/@telus-uds/palette-koodo
+  version_observed: 4.0.1
+  official: true
+  category: design-system
+  api_client: false
+- language: javascript
+  registry: npm
+  name: '@telus-uds/theme-koodo'
+  url: https://www.npmjs.com/package/@telus-uds/theme-koodo
+  version_observed: 8.1.0
+  official: true
+  category: design-system
+  api_client: false
+- language: javascript
+  registry: npm
+  name: '@telus-uds/palette-public-mobile'
+  url: https://www.npmjs.com/package/@telus-uds/palette-public-mobile
+  version_observed: 4.0.0
+  official: true
+  category: design-system
+  api_client: false
+- language: javascript
+  registry: npm
+  name: '@telus-uds/theme-public-mobile'
+  url: https://www.npmjs.com/package/@telus-uds/theme-public-mobile
+  version_observed: 5.1.0
+  official: true
+  category: design-system
+  api_client: false
+- language: javascript
+  registry: npm
+  name: '@telus-uds/system-tokens'
+  url: https://www.npmjs.com/package/@telus-uds/system-tokens
+  version_observed: 2.0.1
+  official: true
+  category: design-tokens
+  api_client: false
+- language: javascript
+  registry: npm
+  name: '@telus-uds/system-theme-tokens'
+  url: https://www.npmjs.com/package/@telus-uds/system-theme-tokens
+  version_observed: 5.1.0
+  official: true
+  category: design-tokens
+  api_client: false
+- language: javascript
+  registry: npm
+  name: '@telus-uds/system-constants'
+  url: https://www.npmjs.com/package/@telus-uds/system-constants
+  version_observed: 4.0.0
+  last_published: '2026-06-08'
+  official: true
+  category: design-tokens
+  api_client: false
+- language: javascript
+  registry: npm
+  name: '@telus/create-library'
+  url: https://www.npmjs.com/package/@telus/create-library
+  install: npm init @telus/library
+  version_observed: 1.16.3
+  last_published: '2023-07-04'
+  official: true
+  category: engineering-tooling
+  api_client: false
+  description: Opinionated npm package initializer used inside TELUS.
+- language: javascript
+  registry: npm
+  name: '@telus/telus-standard'
+  url: https://www.npmjs.com/package/@telus/telus-standard
+  version_observed: 4.2.0
+  last_published: '2023-09-14'
+  official: true
+  category: engineering-tooling
+  api_client: false
+- language: javascript
+  registry: npm
+  name: '@telus/renovate-config'
+  url: https://www.npmjs.com/package/@telus/renovate-config
+  version_observed: 2.3.1
+  official: true
+  category: engineering-tooling
+  api_client: false
+- language: javascript
+  registry: npm
+  name: '@telus/semantic-release-config'
+  url: https://www.npmjs.com/package/@telus/semantic-release-config
+  version_observed: 2.4.0
+  official: true
+  category: engineering-tooling
+  api_client: false
+- language: javascript
+  registry: npm
+  name: '@telus-health-chr/dociql'
+  url: https://www.npmjs.com/package/@telus-health-chr/dociql
+  version_observed: 1.1.8
+  last_published: '2022-04-22'
+  official: true
+  category: graphql-tooling
+  api_client: false
+  description: >-
+    TELUS Health CHR's fork of dociql, a static documentation generator for GraphQL schemas — the
+    tooling trail that leads to the CHR Enterprise API's published schema.
+  related_repo: https://github.com/telus-health-ch/dociql
+
+archived_or_legacy:
+- name: '@telusdigital/tds'
+  registry: npm
+  last_published: '2019-08-09'
+  note: The original TELUS Design System, superseded by @telus-uds.
+- name: '@telus/telus-wizard'
+  registry: npm
+  last_published: '2019-07-10'
+- name: '@telus/koodo-global-elements'
+  registry: npm
+  last_published: '2023-08-04'
+
+registries_checked:
+- registry: npm
+  result: 53 packages across the @telus / @telus-uds / @telusdigital / @telus-health-chr scopes; none is an API client.
+- registry: pypi
+  result: no first-party TELUS API client
+- registry: maven-central
+  result: no first-party TELUS API client
+- registry: nuget
+  result: no first-party TELUS API client
+- registry: rubygems
+  result: no first-party TELUS API client
+- registry: pkg.go.dev
+  result: no first-party TELUS API client
+- registry: packagist
+  result: no first-party TELUS API client
+- registry: crates.io
+  result: no first-party TELUS API client
+
+source_repositories:
+  github_org: https://github.com/telus
+  public_repo_count: 0
+  note: >-
+    The api.github.com/orgs/telus/repos listing returns an empty array — the org has no public
+    repositories, yet it publishes public npm packages and a public GitHub Pages documentation site
+    at https://telus.github.io/universal-design-system/. github.com/telus-agcg (TELUS Agriculture)
+    holds general engineering tooling with no API definitions.

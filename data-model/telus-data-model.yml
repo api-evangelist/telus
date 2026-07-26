@@ -1,0 +1,243 @@
+generated: '2026-07-25'
+method: derived
+source: >-
+  graphql/telus-chr-enterprise-api-introspection.json (505 types, 64 root queries, 49 mutations) for
+  the CHR Enterprise API, and collections/telus-insights-location-api.postman_collection.json plus
+  the published Data Dictionary at https://docs.insights.telus.com/ for the Insights Location API.
+description: >-
+  Two unrelated domain models. The CHR Enterprise API is a full ambulatory-care graph — patients,
+  appointments, encounters, referrals, cases, tasks — with Relay connections between entities. The
+  Insights Location API is a tiny model: a shapefile becomes study zones, a study zone becomes a
+  count job, a job produces buckets. Every entity and every relationship below was read out of a
+  published artifact; nothing is inferred beyond the field names those artifacts contain.
+
+domains:
+
+- domain: TELUS Health CHR Enterprise API
+  source: graphql/telus-chr-enterprise-api.graphql
+  scale:
+    types: 505
+    objects: 286
+    enums: 88
+    input_objects: 86
+    unions: 16
+    interfaces: 10
+    scalars: 19
+    root_queries: 64
+    mutations: 49
+  identifier_style: 'GraphQL ID / opaque node ids; Relay-style connections (edges/nodes/pageInfo)'
+  entities:
+  - entity: Patient
+    root_queries: [patient, patients]
+    mutations: [createPatient, updatePatient, archivePatient, healthProfile, addDrugAllergyRecord, addNonDrugAllergyRecord, addMedicationRecord, upsertPatientDataItem, addCareTeamMember, updateCareTeamMember]
+    relationships:
+    - {type: has_many, target: Encounter, via: encounters}
+    - {type: has_many, target: ReferralRecord, via: referralRecords}
+    - {type: has_many, target: Case, via: cases}
+    - {type: has_many, target: Task, via: tasks}
+    - {type: has_many, target: Attachment, via: attachments}
+    - {type: has_many, target: LabReport, via: labReports}
+    - {type: has_many, target: LabResult, via: labResults}
+    - {type: has_many, target: Letter, via: letters}
+    - {type: has_many, target: AnswerSheet, via: answerSheets}
+    - {type: has_many, target: MedicationRecord, via: medicationRecords}
+    - {type: has_many, target: PatientAllergyRecord, via: allergyRecords}
+    - {type: has_many, target: InjectionRecord, via: injectionRecords}
+    - {type: has_many, target: VitalsRecord, via: vitalsRecords}
+    - {type: has_many, target: PatientDataItem, via: patientDataItems}
+    - {type: has_many, target: AdministrativeNote, via: administrativeNotes}
+    - {type: has_many, target: CareTeamMember, via: careTeamMembers}
+    - {type: has_many, target: Identification, via: identifications}
+    - {type: has_many, target: StatusTag, via: statusTags}
+    - {type: has_one, target: HealthProfile, via: healthProfile}
+    - {type: belongs_to, target: Location, via: primaryLocation}
+    - {type: belongs_to, target: ProviderUser, via: primaryPractitioner}
+    - {type: belongs_to, target: Contact, via: familyPractitioner}
+    - {type: belongs_to, target: Contact, via: referringPractitioner}
+    - {type: belongs_to, target: Facility, via: preferredPharmacy}
+  - entity: Appointment
+    root_queries: [appointment, appointments, upcomingAppointments, availabilities, schedule]
+    mutations: [createAppointment, updateAppointment]
+    relationships:
+    - {type: belongs_to, target: Patient, via: patient}
+    - {type: belongs_to, target: Location, via: location}
+    - {type: belongs_to, target: ProviderUser, via: provider}
+    - {type: belongs_to, target: Service, via: service}
+    - {type: belongs_to, target: PresentingIssue, via: presentingIssue}
+    - {type: belongs_to, target: Respondent, via: respondent}
+    - {type: has_many, target: AppointmentTag, via: tags}
+    note: LocationId has been required on all appointments since version 23.5.
+  - entity: DraftAppointment
+    root_queries: [draftAppointment, draftAppointments]
+    mutations: [createDraftAppointment, updateDraftAppointment, deleteDraftAppointment]
+    relationships:
+    - {type: belongs_to, target: Location, via: location}
+    - {type: belongs_to, target: ProviderUser, via: provider}
+    - {type: belongs_to, target: Service, via: service}
+    note: Draft appointments are taken into account when computing availability (version 23.22).
+  - entity: Encounter
+    mutations: [createAttachment]
+    relationships:
+    - {type: has_many, target: Addendum, via: addendums}
+    - {type: has_many, target: Diagnosis, via: diagnoses}
+    - {type: has_many, target: AnswerSheet, via: answerSheets}
+    - {type: has_many, target: Attachment, via: attachments}
+    - {type: has_many, target: InjectionRecord, via: injections}
+    - {type: has_many, target: InsuredBillingItem, via: insuredBillingItems}
+    - {type: has_many, target: PrivateBillingItem, via: privateBillingItems}
+    - {type: has_many, target: VitalsRecord, via: vitals}
+    - {type: belongs_to, target: PresentingIssue, via: presentingIssue}
+    - {type: belongs_to, target: ProviderUser, via: createdBy}
+    - {type: belongs_to, target: ProviderUser, via: signedBy}
+  - entity: ReferralRecord
+    root_queries: [referralRecord, referralRecords, referralWaitingList, referralWaitingLists, referralStatus, referralStatuses, referralPriority, referralPriorities, referralDataSettings]
+    mutations: [createIncomingReferralRecord, createInternalReferralRecord, createOutgoingReferralRecord, updateIncomingReferralRecord, updateInternalReferralRecord, updateOutgoingReferralRecord, addReferralRecordComment, assignReferralRecordToWaitingList, upsertReferralDataItem]
+    relationships:
+    - {type: belongs_to, target: Patient, via: patient}
+    - {type: belongs_to, target: ReferralStatus, via: status}
+    - {type: belongs_to, target: ReferralPriority, via: priority}
+    - {type: belongs_to, target: ReferralWaitingList, via: waitingList}
+    - {type: has_many, target: ReferralRecordComment, via: comments}
+    - {type: has_many, target: ReferralRecordAttachment, via: attachments}
+    - {type: has_many, target: FlexibleDataPropertyItem, via: referralDataItems}
+  - entity: Case
+    root_queries: [caseStatus, caseStatuses, caseTemplate, caseTemplates]
+    mutations: [createCase, updateCase, updateCaseStatus, closeCase, archiveCase, reassignCase, addCaseComment, manageCaseObservation, upsertCaseDataItem]
+    relationships:
+    - {type: belongs_to, target: CaseTemplate, via: template}
+    - {type: belongs_to, target: CaseStatus, via: status}
+    - {type: belongs_to, target: ProviderUser, via: assignedProviderUser}
+    - {type: has_many, target: Encounter, via: encounters}
+    - {type: has_many, target: CaseComment, via: comments}
+    - {type: has_many, target: CaseObservation, via: observations}
+    - {type: has_many, target: CaseDataItem, via: caseDataItems}
+    - {type: has_many, target: Letter, via: letters}
+    - {type: has_many, target: Attachment, via: attachments}
+    note: The newest entity in the graph — introduced across versions 26.04 to 26.10.
+  - entity: Task
+    root_queries: [task, tasks, taskCategory, taskCategories, taskTemplate, taskTemplates]
+    mutations: [createTask, createTaskByTemplate, updateTask, addTaskComment]
+    relationships:
+    - {type: belongs_to, target: Patient, via: patient}
+    - {type: belongs_to, target: Location, via: location}
+    - {type: belongs_to, target: TaskCategory, via: taskCategory}
+    - {type: has_one, target: TaskAssignee, via: assignee}
+  - entity: GroupVisit
+    root_queries: [groupVisit, groupVisits]
+    mutations: [addGroupVisitAttendee, removeGroupVisitAttendee]
+    relationships:
+    - {type: has_many, target: Appointment, via: appointments}
+    - {type: has_many, target: ProviderUser, via: providerUsers}
+    - {type: belongs_to, target: Location, via: location}
+    - {type: belongs_to, target: ProviderUser, via: createdProviderUser}
+  - entity: Contact
+    root_queries: [contact, contacts]
+    mutations: [createContact, updateContact]
+    relationships:
+    - {type: belongs_to, target: Facility, via: facility}
+  - entity: Facility
+    root_queries: [facilities, facility]
+    mutations: [createFacility, updateFacility]
+  - entity: Location
+    root_queries: [location, locations]
+    note: Carries the IANA time zone name since version 23.15.
+  - entity: ProviderUser
+    root_queries: [provider, providers]
+    mutations: [createProviderOffTime, createStandardWorkHour, createFlexibleWorkHour]
+  - entity: Service
+    root_queries: [service, services]
+    relationships:
+    - {type: has_many, target: PresentingIssue, via: presentingIssues}
+    - {type: has_one, target: LocalizedField, via: localizedName}
+  - entity: Respondent
+    root_queries: [respondent, respondents]
+    mutations: [createRespondent]
+    note: Shares the Patient field surface — the person answering for a patient in a booking flow.
+  - entity: UserGroup
+    root_queries: [userGroup, userGroups]
+    relationships:
+    - {type: has_many, target: ProviderUser, via: members}
+  - entity: LabObservation
+    root_queries: [labObservations, labTestNames]
+    mutations: [saveOlisLabMessage]
+    note: OLIS is the Ontario Laboratories Information System.
+  domain_scalars:
+  - {scalar: Din, meaning: eight-digit Canadian Drug Identification Number}
+  - {scalar: ISO8601Date, meaning: ISO 8601 date}
+  - {scalar: ISO8601DateTime, meaning: ISO 8601 datetime}
+  - {scalar: DateTimeWithTimezone, meaning: ISO 8601 datetime requiring Z or an offset}
+  - {scalar: PartialDate, meaning: partially specified date}
+  - {scalar: TimeWithoutOffset, meaning: 24-hour HH:MM time string}
+  - {scalar: Email}
+  - {scalar: Phone}
+  - {scalar: PhoneSearchString, meaning: search value matched ignoring non-numeric characters}
+  - {scalar: SearchString, meaning: search value matched ignoring case and surrounding whitespace}
+  - {scalar: NumericString}
+  - {scalar: HtmlFragment}
+  - {scalar: FileScalar}
+
+- domain: TELUS Insights Location API
+  source: collections/telus-insights-location-api.postman_collection.json
+  identifier_style: UUIDs generated by the platform (requestId, jobId, customerId)
+  entities:
+  - entity: Customer
+    key: customer_id
+    key_format: UUID
+    description: >-
+      "The unique ID generated when 'Create Customer ID' is performed which creates the association
+      of a customer with their unique API key." Sent as the customerId header on every request.
+    relationships:
+    - {type: has_many, target: Shapefile, via: customerId}
+    - {type: has_many, target: Job, via: customerId}
+  - entity: Shapefile
+    key: request_id
+    key_format: UUID
+    created_by: POST /shapefile
+    read_by: ['GET /shapefile', 'GET /shapefile/{requestId}', 'GET /geofence']
+    deleted_by: DELETE /shapefile/{requestId}
+    formats: ['.kml (Google Keyhole Markup)', '.zip (ESRI: .dbf/.prj/.shp/.shx/.cpg)', '.json (GeoJSON)']
+    constraints: {max_file_size_mb: 25, max_study_zones: 2000, max_row_size_mb: 4, file_name_max_chars: 75}
+    relationships:
+    - {type: has_many, target: StudyZone, via: study_zone column}
+  - entity: StudyZone
+    key: study_zone
+    key_format: string, unique per shapefile, <= 50 characters, no backslashes or quotation marks
+    aliases: [geoid (on GET responses), polygon, geofence]
+    description: A named geospatial boundary; the unit every count job is computed over.
+    relationships:
+    - {type: belongs_to, target: Shapefile, via: requestId}
+  - entity: GeoId
+    description: >-
+      The composite selector a job is run against — a requestId plus one or more study_zone names,
+      optionally with its own min_dwell_time / max_dwell_time.
+    roles: [input_geoid, output_geoid, pass_through_geoid]
+    relationships:
+    - {type: belongs_to, target: Shapefile, via: requestId}
+    - {type: has_many, target: StudyZone, via: study_zone}
+  - entity: Job
+    key: job_id
+    key_format: UUID
+    created_by: POST /count/{type}
+    read_by: ['GET /count/{type}/{jobId}', 'GET /job']
+    cancelled_by: PATCH /job/{jobid}/cancel
+    deleted_by: DELETE /job/{jobid}
+    states: [Processing, COMPLETE]
+    types: [demographic, unique, origin, destination, odmatrix, dwelltime, totaltrip, repeatvisitation, tradearea, home, work]
+    relationships:
+    - {type: belongs_to, target: GeoId, via: input_geoid}
+    - {type: belongs_to, target: GeoId, via: output_geoid}
+    - {type: belongs_to, target: GeoId, via: pass_through_geoid}
+    - {type: has_many, target: ResultBucket, via: buckets}
+  - entity: ResultBucket
+    description: >-
+      A time (and, for dwell-time jobs, dwell) slice of a completed job result — the leaf of the
+      model. Returned under study_zones[].buckets[] with the aggregated, extrapolated, rounded count.
+    fields: [bucket, bucket_size, start_time, end_time, geoid]
+    privacy_floor: minimum 20 devices post-extrapolation; counts rounded up to the nearest 10
+  - entity: Usage
+    read_by: GET /usage
+    scope: organization
+    metrics: [monthly API calls, study zones queried, per-endpoint breakdown, year-over-year comparison]
+
+render: null
+render_note: No subway/ or ERD visual has been generated for this provider yet.

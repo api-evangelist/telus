@@ -1,0 +1,97 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+generated: '2026-07-25'
+method: searched
+provider: TELUS
+providerId: telus
+source: https://docs.insights.telus.com/ — "Introduction - API Restrictions and Usage" and "Best Practices"
+tags:
+- Rate Limiting
+- Location Intelligence
+- Telecommunications
+description: >-
+  TELUS explicitly states that rate limiting is NOT enforced on the Insights Location API, but it
+  publishes hard usage guidance that consumers are expected to honour, plus query-shape floors that
+  ARE enforced through 400 validation. Recorded as advisory limits, because that is exactly what
+  TELUS publishes: "Currently Rate-limiting is not implemented for the API. However, in order to
+  ensure the API performance and stability, it is strongly recommended that all users follow the
+  below limitations."
+enforced: false
+enforcement_note: >-
+  No 429 response is documented anywhere in the Insights Postman collection and no rate-limit
+  response headers are published. Exceeding the guidance degrades platform performance rather than
+  returning an error.
+headers:
+  limit: null
+  remaining: null
+  reset: null
+  retryAfter: null
+responseCodes:
+  throttled: null
+limits:
+- name: Query volume (hourly)
+  api: TELUS Insights Location API
+  scope: organization
+  metric: queries_per_hour
+  limit: 10
+  timeFrame: hour
+  enforced: false
+  note: >-
+    An average, not a burst ceiling — "it is OK for you to submit (POST) 10 queries within a minute
+    and then wait for them to complete (GET) within an hour." Counted per full POST+GET cycle.
+- name: Query volume (daily)
+  api: TELUS Insights Location API
+  scope: organization
+  metric: queries_per_day
+  limit: 100
+  timeFrame: day
+  enforced: false
+- name: Concurrent queries
+  api: TELUS Insights Location API
+  scope: organization
+  metric: concurrent_queries
+  limit: 5
+  timeFrame: instant
+  enforced: false
+  note: Includes queries submitted through the Insights Portal, not just the API.
+- name: Pagination page size
+  api: TELUS Health CHR Enterprise API
+  scope: request
+  metric: records_per_page
+  limit: 100
+  default: 50
+  timeFrame: request
+  enforced: true
+  source: https://help.inputhealth.com/en/articles/5941595-api-reference-documentation
+query_shape_constraints:
+- name: Minimum time bucket — queries up to 1 day
+  constraint: time_bucket_size >= 15 minutes
+- name: Minimum time bucket — queries up to 30 days
+  constraint: time_bucket_size >= 60 minutes
+- name: Minimum time bucket — queries over 30 days
+  constraint: time_bucket_size >= 1440 minutes (24 hours)
+- name: Demographic endpoint minimum bucket
+  constraint: time_bucket_size >= 1440 minutes
+- name: Dwell-time window
+  constraint: The window between min_dwell_time and max_dwell_time must be greater than 15 minutes.
+- name: Shapefile upload
+  constraint: max 25 MB, max 2000 study zones, max 4 MB per study-zone row, file name <= 75 chars, study-zone name <= 50 chars
+policies:
+- name: Token reuse
+  description: >-
+    Reuse the OAuth access token for its full 299-second lifetime rather than minting one per
+    request — "That prevents the identity system from being overwhelmed."
+- name: Poll interval
+  description: Wait a minimum of 5 minutes between GET polls for job results.
+- name: Query decomposition
+  description: >-
+    "In order to reduce the processing time, it is highly recommended to break down your queries for
+    smaller date ranges."
+usage_reporting:
+  endpoint: GET /product/insightsRequest/v1/usage
+  scope: organization
+  metrics: [monthly API calls, study zones queried, per-endpoint call breakdown, year-over-year comparison]
+  portal_location: Account Settings > Usage Statistics in the TELUS Insights Portal
+  note: >-
+    TELUS exposes consumption back to the consumer through a first-class /usage operation — the
+    metering surface exists even though the throttling surface does not.

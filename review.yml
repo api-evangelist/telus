@@ -199,23 +199,45 @@ findings:
     - url: https://location-api.insights.telus.com/.well-known/openid-configuration
       status: 404 ("no Route matched with those values" — Kong gateway)
   webhooksAndEvents:
-    found: false
+    found: true
     asyncapi: false
+    revised: '2026-07-25'
     note: >-
-      No webhook or event catalog is published. The Insights Location API is asynchronous but uses
-      job polling (POST a job, GET /count/{type}/{jobId}), not callbacks.
+      CORRECTED in the 2026-07-25 enrichment round. The TELUS Health CHR Enterprise API ships an
+      Event Notification Service (ENS) — a documented webhook mechanism with 21 signed topics across
+      appointments, patient demographics, patient merges, questionnaires, encounters, referrals and
+      tasks, a 5/10/20/60/120-minute retry backoff, and a deliberate no-PHI payload policy carrying
+      identifiers only. Captured at asyncapi/telus-chr-event-notifications.yml. No AsyncAPI document
+      is published. The Insights Location API remains poll-based (POST a job, GET
+      /count/{type}/{jobId}), with no callbacks.
   graphqlGrpc:
-    graphql: false
+    graphql: true
     grpc: false
-    note: No public GraphQL endpoint and no published .proto files were found.
+    revised: '2026-07-25'
+    note: >-
+      CORRECTED in the 2026-07-25 enrichment round. A real, substantial public GraphQL contract does
+      exist — the TELUS Health Collaborative Health Record (CHR) Enterprise API. Its full
+      introspection document is anonymously fetchable at
+      https://apidocs.ca.inputhealth.com/enterprise-api/introspection.json (HTTP 200, 1.82 MB, 505
+      types / 64 root queries / 49 mutations) and is rendered publicly through GraphQL Voyager at
+      https://apidocs.ca.inputhealth.com/enterprise-api. It was missed in round one because the API
+      lives on the inputhealth.com domain, not on any telus.com property. The executable endpoint is
+      still per-account and unpublished, and access is a paid feature, but the CONTRACT is public.
+      No .proto files were found on any TELUS property or on buf.build.
   sdks:
     firstParty: []
+    revised: '2026-07-25'
     note: >-
-      No first-party TELUS SDK packages found on npm, PyPI, Maven or NuGet for any TELUS API.
-      github.com/telus has 0 public repositories; github.com/telusdigital has 1 (a .github profile
-      pointing back to github.com/telus); github.com/telus-agcg has 21 repositories, all
-      general-purpose engineering tooling (nib, ffi-gdal, cast-ui, terraform providers) with no API
-      definitions. The Insights documentation provides shell/curl snippets only.
+      Still zero API client SDKs, and that finding stands. The 2026-07-25 enrichment round did find
+      53 first-party npm packages across the @telus, @telus-uds, @telusdigital and @telus-health-chr
+      scopes — but none is an API client. @telus-uds is the actively maintained (July 2026)
+      Universal Design System: multi-brand React/React Native components, palettes and themes for
+      TELUS (Allium), Koodo and Public Mobile, documented publicly at
+      https://telus.github.io/universal-design-system/. The @telus scope is internal engineering
+      tooling last touched in 2023. github.com/telus still reports 0 public repositories even though
+      it publishes public packages and a public Pages site. Captured at packages/telus-packages.yml
+      and components/telus-components.yml. The Insights documentation provides shell/curl snippets
+      only; the CHR API expects any standard GraphQL client.
   postman:
     publicWorkspace: true
     note: >-
@@ -227,6 +249,31 @@ findings:
       service; its API documentation, SDKs and webhooks live on developers.ringcentral.com, not on
       any TELUS property. Combined with the EnStream/Aduna/Vonage path for network APIs, TELUS's
       developer relationship is entirely intermediated.
+  enrichmentRounds:
+  - date: '2026-07-25'
+    round: 2
+    headline: >-
+      The single biggest correction to round one: TELUS DOES publish a machine-readable API
+      contract — just not on a telus.com domain. The TELUS Health Collaborative Health Record (CHR)
+      Enterprise API's complete GraphQL introspection document is anonymously fetchable at
+      https://apidocs.ca.inputhealth.com/enterprise-api/introspection.json. Round one searched
+      telus.com properties and concluded "zero specs"; the trail to inputhealth.com ran through an
+      npm package (@telus-health-chr/dociql, a GraphQL documentation generator) and the CHR help
+      centre.
+    found:
+    - GraphQL introspection + SDL for the CHR Enterprise API (505 types, 64 queries, 49 mutations)
+    - CHR Enterprise API Event Notification Service — 21 signed webhook topics with a published retry backoff
+    - A dated, per-version public API changelog going back to 2022 (current version 26.13)
+    - A real onboarding lifecycle with a dedicated sandbox domain
+    - 53 first-party npm packages, including the actively maintained @telus-uds Universal Design System
+    - A HackerOne program handle (telus_old, private) and the telus.com security-issue reporting page
+    stillAbsent:
+    - No OpenAPI or Swagger document anywhere (re-probed 2026-07-25)
+    - No MCP server, no CLI, no API client SDK in any language
+    - No public status page, no SLA, no published deprecation policy
+    - No idempotency contract on either API
+    - No TELUS-owned security.txt, no trust centre, no published certifications
+    - No first-party CAMARA endpoint (posture unchanged)
   transports:
   - protocol: REST
     scheme: https

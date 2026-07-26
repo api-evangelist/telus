@@ -1,0 +1,105 @@
+generated: '2026-07-25'
+method: searched
+source: >-
+  https://docs.insights.telus.com/ (TELUS Insights Location API, Postman Documenter) and
+  https://help.inputhealth.com/en/collections/3317215-chr-enterprise-api (TELUS Health CHR
+  Enterprise API). Cross-checked against the harvested Postman collection
+  (collections/telus-insights-location-api.postman_collection.json, auth type oauth2) and the
+  harvested GraphQL introspection document (graphql/telus-chr-enterprise-api-introspection.json).
+description: >-
+  TELUS runs two completely different authentication models on its two publicly documented APIs.
+  The Insights Location API uses OAuth 2.0 client credentials plus a mandatory customerId header;
+  the TELUS Health CHR Enterprise API uses asymmetric, self-signed JWTs (RS512) where the consumer
+  holds the private key and CHR holds the registered public key — there is no token endpoint and no
+  client secret at all. Neither surface is self-serve: credentials on both sides are issued through
+  a sales/onboarding process.
+summary:
+  types: [oauth2, http]
+  api_key_in: [header]
+  oauth2_flows: [clientCredentials]
+  jwt_bearer_self_signed: true
+  self_serve_credentials: false
+schemes:
+- name: InsightsOAuth2ClientCredentials
+  api: TELUS Insights Location API
+  type: oauth2
+  flow: clientCredentials
+  token_url_published: false
+  token_url_note: >-
+    The token endpoint is not published anonymously. The documentation instructs the consumer to
+    read oauth_token_endpoint, oauth_grant_type and oauth_scope from the "My Account" page of the
+    TELUS Insights Portal (https://insights.telus.com).
+  request_parameters: [grant_type, client_id, client_secret, scope]
+  token_request_content_type: application/x-www-form-urlencoded
+  access_token_use: 'Authorization: Bearer {access_token}'
+  token_lifetime_seconds: 299
+  token_reuse_guidance: >-
+    "When getting an OAuth Token from the Token URL, it is preferable that you reuse the token for
+    specified amount of expiry seconds (present inside the token JSON and set to 299 seconds). That
+    prevents the identity system from being overwhelmed."
+  scopes_published: false
+  sources: [collections/telus-insights-location-api.postman_collection.json, https://docs.insights.telus.com/]
+- name: InsightsCustomerIdHeader
+  api: TELUS Insights Location API
+  type: apiKey
+  in: header
+  parameter_name: customerId
+  case_note: >-
+    The published shell examples send the header lower-cased as `customerid`; the Postman collection
+    sends `customerId` on count/shapefile/geofence/usage requests and `customerid` on the Job
+    endpoints. HTTP header names are case-insensitive, so both are the same header.
+  description: >-
+    Tenant identifier that scopes every request to one customer. Documented as "the unique ID
+    generated when 'Create Customer ID' is performed which creates the association of a customer with
+    their unique API key." Required in addition to the bearer token on every operation.
+  required: true
+  sources: [collections/telus-insights-location-api.postman_collection.json]
+- name: CHRSelfSignedJWT
+  api: TELUS Health CHR Enterprise API
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  header: 'Authorization: Bearer {json_web_token}'
+  signing_algorithm: RS512
+  key_material: >-
+    2048-bit RSA key pair. The consumer generates it, keeps the private key, and registers the
+    public key in PEM format in the "JWT Public Key" field of an API Consumer under
+    Settings > Enterprise API in the CHR account.
+  required_claims:
+  - claim: iss
+    requirement: Must match the Issuer value configured on the API Consumer record in CHR.
+  - claim: exp
+    requirement: Must expire within the next 15 minutes (900 seconds).
+  token_endpoint: none
+  client_secret: none
+  notes:
+  - There is no authorization server and no token exchange — the consumer mints its own token.
+  - Every API action is audit-logged; requests and responses are retained for 90 days.
+  - Access is a paid feature enabled per CHR account, gated by a Privacy & Security questionnaire.
+  sources:
+  - https://help.inputhealth.com/en/articles/6483215-chr-enterprise-api
+  - https://help.inputhealth.com/en/articles/6483223-making-requests-to-the-api
+  - https://help.inputhealth.com/en/articles/6483229-creating-api-consumers
+- name: CHREventNotificationSignature
+  api: TELUS Health CHR Enterprise API — Event Notification Service
+  type: webhookSignature
+  direction: inbound-to-consumer
+  mechanism: >-
+    The CHR signs each outbound event notification with a shared secret supplied by the consumer
+    when creating the subscription; the resulting signature travels in a request header. The header
+    name is not published in the help centre and was not verified.
+  sources: [https://help.inputhealth.com/en/articles/7988802-chr-enterprise-api-event-notifications]
+portal_authentication:
+- name: TELUS Client Identity (PingFederate)
+  where: api.telus.com API Marketplace and insights.telus.com portal sign-in
+  type: oauth2
+  flow: authorizationCode
+  authorization_endpoint: https://auth-gateway.telus.com/as/authorization.oauth2
+  scopes_observed: [ciiLogin, identityinfofulldetail, serviceassociation]
+  note: Human browser sign-in for the portals, not an API grant. Discovery documents return 403 (Cloudflare).
+not_found:
+  openid_connect_discovery: No /.well-known/openid-configuration is reachable on any TELUS host.
+  mtls: No mutual-TLS requirement is documented on either API.
+  ciba: >-
+    CIBA — the backchannel flow CAMARA specifies for network APIs — appears nowhere on a TELUS
+    property; TELUS publishes no first-party CAMARA endpoint.

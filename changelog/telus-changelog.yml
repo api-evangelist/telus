@@ -1,0 +1,132 @@
+generated: '2026-07-25'
+method: searched
+source: https://help.inputhealth.com/en/collections/3317215-chr-enterprise-api
+description: >-
+  TELUS keeps a genuine, dated, per-version API changelog — but only for the TELUS Health CHR
+  Enterprise API, published as one "What's new in the API" article per calendar year in the CHR help
+  centre. The Insights Location API has no changelog of any kind. The CHR changelog is the single
+  best evidence that TELUS runs at least one API as a versioned product rather than a project.
+
+apis:
+- api: TELUS Health CHR Enterprise API
+  scheme: release-train
+  version_format: YY.WW (calendar year . release number), for example 26.13
+  cadence: bi-weekly, with separate off-schedule release notes for out-of-band fixes
+  current_version: '26.13'
+  current_version_observed: '2026-07-25'
+  changelog_urls:
+  - year: 2026
+    url: https://help.inputhealth.com/en/articles/13391004-what-s-new-in-the-api-2026
+  - year: 2025
+    url: https://help.inputhealth.com/en/articles/10761574-what-s-new-in-the-api-2025
+  - year: 2024
+    url: https://help.inputhealth.com/en/articles/8834412-what-s-new-in-the-api-2024
+  - year: 2023
+    url: https://help.inputhealth.com/en/articles/5922985-what-s-new-in-the-api-2023
+  - year: 2022
+    url: https://help.inputhealth.com/en/articles/6913727-what-was-new-in-api-in-2022
+  off_schedule_release_notes: https://help.inputhealth.com/en/articles/13414382-off-schedule-release-notes-2026
+  entries:
+  - version: '26.13'
+    breaking: false
+    additions:
+    - groupVisits query returns the group visits configured on an account
+    - addGroupVisitAttendee mutation adds a patient to a group visit
+    - removeGroupVisitAttendee mutation removes a patient from a group visit
+  - version: '26.12'
+    breaking: false
+    highlights: [No updates to the Enterprise API in this version]
+  - version: '26.11'
+    breaking: false
+    highlights: [No updates to the Enterprise API in this version]
+  - version: '26.10'
+    breaking: false
+    additions:
+    - manageCaseObservation mutation manages observations on a case
+    - addCaseComment mutation adds a comment to a case
+    changes:
+    - createCase mutation gained observation support
+  - version: '26.09'
+    breaking: false
+    additions:
+    - upsertCaseDataItem mutation
+    - updateCaseStatus mutation
+    - closeCase mutation
+    changes:
+    - createCase and updateCase support linking an encounter
+  - version: '26.08'
+    breaking: false
+    additions: [archiveCase mutation]
+  - version: '26.07'
+    breaking: false
+    additions:
+    - reassignCase mutation
+    - virtualVisitLink query
+  - version: '26.06'
+    breaking: false
+    additions: [addMedicationRecord mutation]
+    changes: ['Case type now exposes caseDataItems']
+  - version: '26.05'
+    breaking: false
+    changes:
+    - createAttachment now supports caseId and referralId
+    - caseTemplate type enhanced
+  - version: '26.04'
+    breaking: false
+    additions: [createCase mutation, updateCase mutation]
+  - version: '26.03'
+    breaking: false
+    additions: [addNonDrugAllergyRecord mutation]
+    changes:
+    - createAppointment and updateAppointment support allowPractitionerNotification
+    - Case type supports comments and letters sub-queries
+  - version: '26.02'
+    breaking: false
+    additions:
+    - addDrugAllergyRecord mutation
+    - 'Event Notification Service topics task.created and task.updated'
+  - version: '25.25'
+    date: '2025-12-15'
+    breaking: false
+    additions: [createTask mutation]
+    changes: ['presentingIssues query gained searchablePhrase and localizedSearchablePhrase fields']
+  - version: '25.24'
+    breaking: false
+    additions: ['Optional language header accepting "en" or "fr" for localized responses']
+    changes: [service query gained descriptions and localization fields]
+  - version: '25.23'
+    breaking: false
+    additions: [task query]
+    changes: [Patient type gained a pronouns field; createPatient and updatePatient manage pronouns]
+  - version: '25.22'
+    breaking: false
+    additions: [upsertReferralDataItem mutation]
+  - version: '25.21'
+    breaking: false
+    additions: [referralDataSettings query]
+  - version: '25.20'
+    breaking: false
+    additions: [taskTemplate query]
+    changes: [referralRecord type gained a referral-data-items sub-query]
+  - version: '25.18'
+    breaking: false
+    additions: [taskCategories query, facility / standard work hour / flexible work hour mutations]
+  historic_breaking_changes:
+  - version: '23.24'
+    date: '2023-12-05'
+    removed: createAppointmentOptions — functionality replaced
+  - version: '23.14'
+    date: '2023-07-18'
+    deprecated: middleInitial field replaced with middleName
+  - version: '23.12'
+    date: '2023-06-20'
+    removed: consentToDeferredPrescription — internal CHR use only
+  - version: '23.5'
+    date: '2023-03-20'
+    changed: LocationId became a required field on all appointments
+- api: TELUS Insights Location API
+  changelog_published: false
+  note: >-
+    No dated changelog, release notes page, or version history is published for the Insights
+    Location API. Product changes surface as "Product notifications" inside the Insights Portal,
+    which is behind the sign-in wall.

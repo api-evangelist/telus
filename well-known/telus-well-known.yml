@@ -1,0 +1,90 @@
+generated: '2026-07-25'
+method: searched
+source: live probes of every apis.yml baseURL / humanURL / portal host on 2026-07-25
+description: >-
+  RFC 8615 /.well-known/ discovery surface across every TELUS host in this repo. TELUS publishes
+  none of its own: the Insights gateway is a Kong instance whose route table only matches the
+  /product/insightsRequest/v1 prefix (everything else returns the Kong "no Route matched" 404), the
+  Insights Portal is a single-page app that returns its index.html shell with HTTP 200 for any path
+  (so a 200 there is NOT a document), www.telus.com returns 403 to every automated client behind
+  Cloudflare, and the one real security.txt reachable on a TELUS documentation host belongs to
+  Intercom, the help-centre vendor, not to TELUS.
+hosts:
+- host: https://location-api.insights.telus.com
+  role: TELUS Insights Location API gateway (Kong)
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  note: >-
+    All 404s carry the Kong body {"message":"no Route matched with those values"}, confirming the
+    gateway exposes no discovery surface outside the product route.
+- host: https://insights.telus.com
+  role: TELUS Insights Portal (SPA)
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    valid: false
+    note: SPA index.html catch-all (329 bytes of <!doctype html>), not a security.txt.
+  - path: /.well-known/api-catalog
+    status: 200
+    valid: false
+    note: Same SPA catch-all shell.
+- host: https://docs.insights.telus.com
+  role: Insights API reference (Postman Documenter)
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://www.telus.com
+  role: TELUS corporate site
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+    note: Cloudflare bot challenge — 403 for all automated clients on all paths, so absence is unproven.
+- host: https://api.telus.com
+  role: TELUS API Marketplace
+  documents:
+  - path: /.well-known/security.txt
+    status: 503
+- host: https://support.api.telus.com
+  role: API Marketplace Support Center
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+- host: https://help.inputhealth.com
+  role: TELUS Health CHR help centre / CHR Enterprise API documentation (Intercom-hosted)
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    valid: true
+    owner: Intercom
+    note: >-
+      A real RFC 9116 security.txt, but it is Intercom's (Contact https://bugcrowd.com/intercom,
+      mailto:security@intercom.com, Canonical https://app.intercom.com/.well-known/security.txt).
+      It is the documentation vendor's file, NOT a TELUS vulnerability-disclosure contact, so it is
+      deliberately not saved as telus-security.txt and no SecurityTxt pointer is wired from it.
+- host: https://apidocs.ca.inputhealth.com
+  role: CHR Enterprise API schema explorer (GraphQL Voyager) + introspection document
+  documents:
+  - path: /enterprise-api/introspection.json
+    status: 200
+    valid: true
+    file: ../graphql/telus-chr-enterprise-api-introspection.json
+    note: >-
+      Not a /.well-known/ path, but the one anonymously fetchable machine-readable contract TELUS
+      publishes anywhere. Recorded here so the discovery trail is complete.
+summary:
+  security_txt_published_by_telus: false
+  openid_configuration_published: false
+  oauth_authorization_server_published: false
+  api_catalog_published: false
+  ai_plugin_published: false

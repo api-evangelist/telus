@@ -1,0 +1,119 @@
+generated: '2026-07-25'
+method: searched
+source: https://help.inputhealth.com/en/articles/7988802-chr-enterprise-api-event-notifications
+spec_type: WebhookCatalog
+asyncapi_published: false
+asyncapi_note: >-
+  TELUS publishes no AsyncAPI document for this surface. This file is the captured webhook catalogue
+  exactly as documented — event topics, delivery mechanism, payload policy, signing and retry — and
+  is deliberately NOT dressed up as an AsyncAPI specification, because none exists.
+description: >-
+  The TELUS Health CHR Enterprise API ships a real event surface: the Enterprise API Event
+  Notification Service (ENS), "a feature allowing an API Consumer to receive notifications whenever
+  one or more specific events occur in your account, via a webhook mechanism." It is the only
+  push/event surface anywhere in the TELUS estate — the Insights Location API is asynchronous but
+  uses job polling, not callbacks.
+
+api: TELUS Health CHR Enterprise API
+service: Enterprise API Event Notification Service (ENS)
+transport: HTTPS webhook (POST to a consumer-supplied URL)
+payload_format: JSON
+
+subscription:
+  managed_in: CHR product UI — Settings > Enterprise API > edit an API Consumer > Subscriptions tab
+  fields: [name, url, secret, topics]
+  multiple_subscriptions: true
+  self_serve_api: false
+  note: Subscriptions are created in the product, not through the GraphQL API.
+
+security:
+  signed: true
+  mechanism: >-
+    "The CHR signs each notification with a 'secret'. The resulting signature is included in the
+    request header." The secret is supplied by the consumer at subscription time.
+  header_name: not published
+  verification_guidance: Verify the signature header before trusting a notification.
+
+delivery:
+  retry_policy: >-
+    "If a notification fails for any reason, the ENS uses a backoff mechanism to retry sending the
+    request to your endpoint 5 times: after 5, 10, 20, 60 and 120 minutes."
+  retry_attempts: 5
+  retry_backoff_minutes: [5, 10, 20, 60, 120]
+  ordering_guarantee: not published
+  deduplication: not published
+
+payload_policy:
+  contains_phi: false
+  statement: >-
+    "The notification payload contains only IDs and other fields, no personal information or
+    personal health information."
+  common_fields: [topic, subscriptionId, accountDomain, isImporting]
+  event_fields: >-
+    Identifiers for the resources involved in the event (for example appointmentId, patientId,
+    providerId). The consumer is expected to call the GraphQL API with those ids to fetch the
+    actual record.
+  pattern: thin-event / claim-check — the webhook is a pointer, the GraphQL API is the payload.
+
+topics:
+- topic: appointment.created
+  domain: Appointments
+- topic: appointment.updated
+  domain: Appointments
+- topic: appointment.canceled
+  domain: Appointments
+- topic: appointment.deactivated
+  domain: Appointments
+- topic: patient_demographics.created
+  domain: Patients
+- topic: patient_demographics.updated
+  domain: Patients
+- topic: patient_demographics.archived
+  domain: Patients
+- topic: patient.merged
+  domain: Patients
+- topic: qnaire.completed
+  domain: Questionnaires
+- topic: encounter.created
+  domain: Encounters
+- topic: encounter.signed
+  domain: Encounters
+- topic: encounter.unlocked
+  domain: Encounters
+- topic: encounter.deleted
+  domain: Encounters
+- topic: referral.incoming.created
+  domain: Referrals
+- topic: referral.incoming.updated
+  domain: Referrals
+- topic: referral.internal.created
+  domain: Referrals
+- topic: referral.internal.updated
+  domain: Referrals
+- topic: referral.outgoing.created
+  domain: Referrals
+- topic: referral.outgoing.updated
+  domain: Referrals
+- topic: task.created
+  domain: Tasks
+  added: '2026-02'
+  source: https://help.inputhealth.com/en/articles/13391004-what-s-new-in-the-api-2026
+- topic: task.updated
+  domain: Tasks
+  added: '2026-02'
+  source: https://help.inputhealth.com/en/articles/13391004-what-s-new-in-the-api-2026
+
+topic_count: 21
+domains: [Appointments, Patients, Questionnaires, Encounters, Referrals, Tasks]
+
+related:
+  graphql_schema: graphql/telus-chr-enterprise-api.graphql
+  changelog: changelog/telus-changelog.yml
+  authentication: authentication/telus-authentication.yml
+
+other_surfaces:
+- api: TELUS Insights Location API
+  events: false
+  note: >-
+    Asynchronous by design but poll-based — POST a job, then GET /count/{type}/{jobId} until
+    status == "COMPLETE". No callbacks, no event catalogue, no AsyncAPI.

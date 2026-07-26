@@ -46,9 +46,28 @@ The TELUS Insights Location API exposes de-identified, aggregated geo-intelligen
 - [Postman Collection](collections/telus-insights-location-api.postman_collection.json)
 - [Portal](https://insights.telus.com/)
 
+### TELUS Health CHR Enterprise API
+
+The TELUS Health Collaborative Health Record (CHR) Enterprise API is a GraphQL interface onto the CHR ambulatory-care platform used by Canadian clinics. Its published introspection document describes **505 types, 64 root queries and 49 mutations** spanning patients, appointments and availability, encounters, referrals, cases, tasks, group visits, attachments, letters, lab results (including OLIS lab messages), allergy and medication records, health profiles, facilities, providers and work hours. Pagination follows the GraphQL Cursor Connections specification (default 50, maximum 100). Authentication is a consumer-minted **RS512 JWT** — you generate a 2048-bit RSA key pair, register the public key on an API Consumer inside the CHR account, and sign your own token with a matching `iss` and a ≤ 900-second expiry. There is no authorization server, no token endpoint and no client secret. A companion Event Notification Service pushes **21 signed webhook topics** carrying identifiers only, with no personal or personal-health information in the payload.
+
+- **Human URL:** [https://help.inputhealth.com/en/collections/3317215-chr-enterprise-api](https://help.inputhealth.com/en/collections/3317215-chr-enterprise-api)
+- **Schema surface:** `https://apidocs.ca.inputhealth.com/enterprise-api` (GraphQL Voyager)
+
+#### Properties
+
+- [GraphQL SDL](graphql/telus-chr-enterprise-api.graphql)
+- [GraphQL introspection (verbatim)](graphql/telus-chr-enterprise-api-introspection.json)
+- [Documentation](https://help.inputhealth.com/en/collections/3317215-chr-enterprise-api)
+- [API reference](https://help.inputhealth.com/en/articles/5941595-api-reference-documentation)
+- [Getting started / onboarding](https://help.inputhealth.com/en/articles/6368814-enterprise-api-onboarding-overview)
+- [Event notifications](asyncapi/telus-chr-event-notifications.yml)
+- [Changelog](https://help.inputhealth.com/en/articles/13391004-what-s-new-in-the-api-2026)
+
 ## What is not here
 
-No OpenAPI or Swagger document is published publicly by TELUS, so there is no `openapi/` directory in this repository. The Insights documentation points readers at a "Swagger file" that lives behind the Insights Portal login; every anonymous specification path probed returned 404 or an SPA catch-all.
+No OpenAPI or Swagger document is published publicly by TELUS, so there is no `openapi/` directory in this repository. The Insights documentation points readers at a "Swagger file" that lives behind the Insights Portal login; every anonymous specification path probed returned 404, 401 or an SPA catch-all. There is also no MCP server, no CLI, no API client SDK in any language, no public status page, no SLA, no published deprecation policy, no idempotency contract on either API, and no TELUS-owned `security.txt`.
+
+The one machine-readable contract TELUS does publish is the CHR GraphQL introspection document above — and it is not on a `telus.com` domain, which is why the first review round recorded "zero specs harvested."
 
 The TELUS API Marketplace at [api.telus.com](https://api.telus.com/) redirects anonymous requests to the TELUS Client Identity login. `developers.telus.com` — the internal "Simplify" developer portal — resets anonymous TLS connections. `iot.telus.com` is an IoT Marketplace login page. `opengateway.telus.com`, `developer.telus.com`, `apis.telus.com` and `networkapi.telus.com` do not resolve. `designsystem.telus.com` and `tds.telus.com` serve expired TLS certificates.
 
@@ -57,6 +76,31 @@ The TELUS API Marketplace at [api.telus.com](https://api.telus.com/) redirects a
 TELUS participates in [CAMARA](https://camaraproject.org/) — six TELUS staff are named in `camaraproject/Governance/PARTICIPANTS.MD`, and TELUS is listed as an Operator in the CAMARA landscape — but it exposes no first-party CAMARA endpoint. Canada's network APIs are aggregated by **EnStream LP**, the mobile-identity joint venture owned by Bell Mobility, Rogers and TELUS, which partnered with **Aduna** (the Ericsson-led carrier JV) in February 2025 to publish **Number Verification** and **SIM Swap**. In June 2026 **Vonage** commercially launched SIM Swap Detection and Silent Authentication in Canada over that same path. A developer who wants a TELUS network capability buys it from Vonage or Aduna — never from TELUS.
 
 No evidence was found that TELUS signed the GSMA Open Gateway MoU, and no TM Forum Open API conformance certification was found. CIBA, the backchannel authentication flow CAMARA specifies, does not appear on any TELUS property.
+
+## Artifacts in this repository
+
+| Artifact | Path |
+| --- | --- |
+| GraphQL SDL + introspection (CHR) | `graphql/` |
+| Postman collection (Insights) | `collections/` |
+| Authentication profile | `authentication/telus-authentication.yml` |
+| OAuth scopes | `scopes/telus-scopes.yml` |
+| API conventions | `conventions/telus-conventions.yml` |
+| Error catalog | `errors/telus-problem-types.yml` |
+| Rate limits and usage guidance | `rate-limits/telus-rate-limits.yml` |
+| Webhook / event catalog (CHR ENS) | `asyncapi/telus-chr-event-notifications.yml` |
+| Lifecycle and versioning | `lifecycle/telus-lifecycle.yml` |
+| Changelog | `changelog/telus-changelog.yml` |
+| Data model | `data-model/telus-data-model.yml` |
+| Conformance | `conformance/telus-conformance.yml` |
+| Sandbox and test surfaces | `sandbox/telus-sandbox.yml` |
+| Packages | `packages/telus-packages.yml` |
+| Embedded components (UDS) | `components/telus-components.yml` |
+| Agent skills | `skills/` |
+| llms.txt | `llms/telus-llms.txt` |
+| Well-known discovery probes | `well-known/telus-well-known.yml` |
+| Domain security | `security/telus-domain-security.yml` |
+| Vulnerability disclosure | `security/telus-vulnerability-disclosure.yml` |
 
 ## Links
 

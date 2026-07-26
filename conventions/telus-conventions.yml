@@ -1,0 +1,141 @@
+generated: '2026-07-25'
+method: searched
+source: >-
+  https://docs.insights.telus.com/ (Insights Location API reference, Postman Documenter) and
+  https://help.inputhealth.com/en/collections/3317215-chr-enterprise-api (CHR Enterprise API),
+  cross-checked against collections/telus-insights-location-api.postman_collection.json and
+  graphql/telus-chr-enterprise-api-introspection.json.
+description: >-
+  Cross-cutting request/response semantics for the two publicly documented TELUS APIs. They share
+  almost nothing: the Insights Location API is an asynchronous REST job queue behind a Kong gateway,
+  and the CHR Enterprise API is a synchronous Relay-style GraphQL endpoint. Neither documents an
+  idempotency key, so retries on write operations are NOT safe by contract on either surface — this
+  is the single largest runtime-semantics gap in the TELUS estate.
+
+apis:
+- name: TELUS Insights Location API
+  base_url: https://location-api.insights.telus.com/product/insightsRequest/v1
+  api_style: REST over HTTPS, JSON request and response bodies, asynchronous job queue
+  authentication:
+    scheme: OAuth 2.0 client credentials bearer token PLUS a mandatory customerId header
+    detail: authentication/telus-authentication.yml
+  asynchrony:
+    pattern: POST-to-enqueue, GET-to-poll
+    submit: 'POST /count/{type} returns HTTP 202 with {"jobId": "...", "link": {"rel": "...", "url": "/count/{type}/{jobId}"}}'
+    poll: 'GET /count/{type}/{jobId}'
+    pending_response: 'HTTP 202 with {"jobId": "...", "status": "Processing", "link": {...}}'
+    complete_response: HTTP 200 with the result document
+    completion_signal: response field `status` equals "COMPLETE"
+    polling_guidance: >-
+      "It is recommended to wait a minimum of 5 minutes before submitting a GET for the results...
+      we recommend that you create a loop to check the results based on the 'status' field equal to
+      'COMPLETE'."
+    validation: >-
+      "API validates both the request and the action to be performed before starting the long
+      running process. If the request is invalid, API will reply immediately with an error code such
+      as HTTP 400 (Bad Request)."
+    hypermedia: Every job response carries a `link` object with `rel` and a relative `url` to the status resource.
+    job_management:
+      list: 'GET /job'
+      cancel: 'PATCH /job/{jobid}/cancel'
+      delete: 'DELETE /job/{jobid} (a running job is cancelled first, then deleted)'
+  pagination:
+    style: offset
+    applies_to: ['GET /job', 'GET /shapefile']
+    request_params:
+      limit: number of records to fetch; default 15
+      offset: number of records to skip; default 0
+      sort: 'createdDate | api | status; prefix with - for descending; default -createdDate'
+      selectjobs: 'user | organization; default user (GET /job only)'
+      selectfiles: 'user | organization | public | all (GET /shapefile only)'
+    response_status: HTTP 206 Partial Content is returned for paginated list responses
+  idempotency:
+    supported: false
+    mechanism: none
+    note: >-
+      No Idempotency-Key header or equivalent is documented or present in the collection. A retried
+      POST /count/{type} enqueues a second job and consumes a second query against the documented
+      volume guidance.
+  request_tracing:
+    request_id_header: none documented
+    note: >-
+      The Kong gateway returns a `request_id` inside its own 404 error body, but no request-id
+      response header is documented for successful calls.
+  versioning:
+    scheme: uri-path
+    current: v1
+    location: /product/insightsRequest/v1
+  time_semantics:
+    format: ISO 8601 (e.g. 2020-01-03T00:00:00)
+    timezone_param: 'timezone; valid values UTC, AST, CST, EST, PST, MST, NST; default UTC'
+    data_floor: '2019-01-01T00:00:00'
+    known_gaps: ['2021-06-14', '2021-06-15', '2021-06-16']
+  error_envelope:
+    shape: 'JSON object; Kong-level failures return {"message": "...", "request_id": "..."}'
+    rfc9457: false
+    detail: errors/telus-problem-types.yml
+  rate_limit_signaling:
+    enforced: false
+    published_quote: >-
+      "Currently Rate-limiting is not implemented for the API. However, in order to ensure the API
+      performance and stability, it is strongly recommended that all users follow the below
+      limitations."
+    detail: rate-limits/telus-rate-limits.yml
+  privacy_semantics:
+    minimum_aggregation: 20 devices post-extrapolation
+    rounding: counts rounded up to the nearest 10
+    minimum_result_interval: 15 minutes
+    note: Output is aggregated and extrapolated by design; per-device data is never returned.
+
+- name: TELUS Health CHR Enterprise API
+  base_url_note: >-
+    The executable GraphQL endpoint is issued per CHR account domain and read from
+    Settings > Enterprise API inside the account; it is not published anonymously. The published
+    schema surface is https://apidocs.ca.inputhealth.com/enterprise-api.
+  api_style: GraphQL over HTTPS; the request body is the GraphQL query as a POST payload
+  authentication:
+    scheme: Self-signed RS512 JWT bearer; no token endpoint, no client secret
+    detail: authentication/telus-authentication.yml
+  pagination:
+    style: cursor
+    specification: GraphQL Cursor Connections Specification (https://relay.dev/graphql/connections.htm)
+    default_page_size: 50
+    max_page_size: 100
+    ordering: Patients ordered by id; appointments ordered by date; an `orderBy` filter argument is available.
+  filtering:
+    supported: true
+    note: Root queries expose filter arguments (for example identificationTemplateId on `patients`).
+  idempotency:
+    supported: false
+    mechanism: none
+    note: >-
+      No idempotency key, client-supplied mutation id, or dedupe contract is documented. Mutations
+      such as createAppointment and createPatient are not safe to blind-retry.
+  error_envelope:
+    shape: GraphQL `errors` array alongside `data` (HTTP 200 for field-level errors)
+    rfc9457: false
+  versioning:
+    scheme: release-train
+    cadence: bi-weekly, version numbers of the form YY.WW (for example 26.13)
+    breaking_change_practice: >-
+      Fields are deprecated and replaced rather than removed silently (e.g. middleInitial replaced
+      with middleName), and removals are announced in the dated changelog.
+    detail: changelog/telus-changelog.yml
+  auditing:
+    enabled: true
+    retention_days: 90
+    note: '"All API actions are recorded; requests and responses retained for 90 days." API logs are viewable in-product.'
+  events:
+    supported: true
+    mechanism: Event Notification Service (ENS) webhooks
+    detail: asyncapi/telus-chr-event-notifications.yml
+
+cross_cutting:
+  idempotency_supported_anywhere: false
+  webhooks_supported: true
+  webhooks_surface: TELUS Health CHR Enterprise API only
+  self_serve_signup: false
+  sandbox: sandbox/telus-sandbox.yml
+  errors: errors/telus-problem-types.yml
+  lifecycle: lifecycle/telus-lifecycle.yml
+  rate_limits: rate-limits/telus-rate-limits.yml

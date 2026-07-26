@@ -1,0 +1,83 @@
+generated: '2026-07-25'
+method: searched
+source: >-
+  https://help.inputhealth.com/en/articles/6368814-enterprise-api-onboarding-overview,
+  https://help.inputhealth.com/en/articles/6483223-making-requests-to-the-api and
+  https://docs.insights.telus.com/ ("Getting Started - Run a job", "Introduction - Insights
+  Developer Portal").
+description: >-
+  Both publicly documented TELUS APIs provide a real pre-production surface, but neither publishes
+  self-serve test credentials or magic test values. The CHR Enterprise API issues a dedicated
+  sandbox DOMAIN — a separate CHR account with its own credentials — during onboarding, and the
+  Insights Location API provides an interactive console (the Data Job tool) inside the Insights
+  Portal plus a set of public Statistics-Canada shapefiles that act as ready-made test geography.
+  There are no test tokens, no test-vs-live key prefixes, no time simulation and no fixture
+  triggers on either surface; nothing below is invented.
+
+environments:
+- api: TELUS Health CHR Enterprise API
+  name: sandbox domain
+  type: separate account domain
+  self_serve: false
+  how_obtained: >-
+    Issued in the Development phase of onboarding — "obtain sandbox domain credentials" — after the
+    intake questionnaire and the CHR Enterprise API contract are signed. Production access is a
+    separate request gated by a Privacy & Security questionnaire.
+  endpoint_discovery: >-
+    "From the main menu in the CHR sandbox domain, click Settings > Enterprise API, and under API
+    Endpoint you can copy your endpoint."
+  credentials: >-
+    Consumer-generated 2048-bit RSA key pair; the public key is registered on an API Consumer in the
+    sandbox domain. There is no shared or published test key.
+  data: Sandbox domain data, not production. "Production domains contain live patient data."
+  tooling_guidance: The documentation recommends Insomnia or Postman for testing in sandbox environments.
+  onboarding_url: https://help.inputhealth.com/en/articles/6368814-enterprise-api-onboarding-overview
+- api: TELUS Insights Location API
+  name: TELUS Insights Portal — Data Job tool
+  type: interactive console
+  url: https://insights.telus.com/
+  self_serve: false
+  how_obtained: >-
+    Two onboarding emails: an informative one from dlTelusInsights@telus.com with links to the
+    Portal and the API documentation, and a TELUS Client Identity activation email from
+    do.not.reply@telus.com. OAuth credentials are then requested by raising a ticket in the Portal
+    and read from the My Account page.
+  capabilities:
+  - Explore and run every API endpoint interactively by selecting a job type in the Data Job tool.
+  - Edit an existing job and re-run it from the View Data Jobs screen.
+  - JSON preview of a request body, which the documentation recommends using to build API payloads.
+  - Usage statistics under Account Settings.
+  data: Live production geo-intelligence — the console is not a mock environment.
+
+public_test_geography:
+  api: TELUS Insights Location API
+  description: >-
+    Public shapefiles derived from Statistics Canada Digital Boundary Files are pre-loaded for every
+    account, so a new consumer can run a real query without first uploading geometry. They are the
+    closest thing TELUS publishes to a fixture set.
+  source: Statistics Canada Digital Boundary Files
+  file_naming:
+  - pattern: public_canada_csd_{CensusYear}_{PRCode}_{PRUID}.zip
+    example: public_canada_csd_2021_bc_59.zip
+    request_id_example: public-canada-csd-2021-bc-59-zip-{random GUID}
+    study_zone_naming: 'CSD Name followed by CSD Type, e.g. Victoria(CY); DGUID appended where the name+type is not unique, e.g. Okanagan (Part) 1(IRI)(5937801)'
+  - pattern: public_canada_fsa_{CensusYear}_{PRCode}_{PRUID}.zip
+    example: public_canada_fsa_2021_bc_59.zip
+    study_zone_naming: 'CFSAUID, the three-character forward sortation area, e.g. V3T'
+  release_years: {csd: 2021, fsa: 2021}
+  discovery: 'GET /product/insightsRequest/v1/geofence returns the public shapefile request IDs after the custom ones; the Portal lists them under Shapefile/RequestID.'
+
+not_published:
+  test_api_keys: false
+  test_key_prefixes: false
+  magic_test_values: false
+  test_clocks: false
+  fixture_triggers: false
+  webhook_test_events: false
+  note: >-
+    No test card numbers, magic identifiers, sandbox tokens, time simulation or event-replay tooling
+    is published for either API. Do not assume any value not listed above.
+
+related:
+  authentication: authentication/telus-authentication.yml
+  conventions: conventions/telus-conventions.yml

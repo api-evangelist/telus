@@ -1,0 +1,185 @@
+generated: '2026-07-25'
+method: derived
+source: >-
+  Derived from graphql/telus-chr-enterprise-api-introspection.json,
+  collections/telus-insights-location-api.postman_collection.json and the artifacts in this repo;
+  enriched from https://docs.insights.telus.com/ and
+  https://help.inputhealth.com/en/collections/3317215-chr-enterprise-api.
+description: >-
+  Which cross-cutting and industry standards the two publicly documented TELUS APIs actually
+  conform to. The headline is that TELUS Health's CHR Enterprise API is a strong GraphQL citizen
+  (Relay cursor connections, RS512 JWT, machine-readable deprecations) but implements none of the
+  healthcare interoperability standards a buyer would expect — there is no FHIR surface, no SMART on
+  FHIR, no OAuth authorization server at all. On the carrier side, TELUS participates in CAMARA but
+  ships no CAMARA endpoint of its own.
+
+standards:
+- id: openapi
+  conforms: false
+  evidence: >-
+    No OpenAPI or Swagger document is published anywhere. Probes of /openapi.json, /swagger.json,
+    /v3/api-docs and /docs on the Insights gateway all return the Kong "no Route matched" 404; the
+    same paths under the authenticated product route return 401, not a spec. The Insights docs refer
+    to a "Swagger file" that lives behind the Insights Portal login.
+- id: graphql
+  conforms: true
+  evidence: >-
+    TELUS Health CHR Enterprise API is a GraphQL endpoint with a publicly fetchable introspection
+    document (505 types, 64 queries, 49 mutations) at
+    https://apidocs.ca.inputhealth.com/enterprise-api/introspection.json.
+- id: graphql-introspection
+  conforms: true
+  evidence: Introspection is published anonymously and rendered through GraphQL Voyager.
+- id: relay-cursor-connections
+  conforms: true
+  evidence: >-
+    The API reference cites the GraphQL Cursor Connections Specification
+    (https://relay.dev/graphql/connections.htm); the schema exposes *Connection types with
+    edges/nodes/pageInfo. Default page 50, maximum 100.
+- id: graphql-deprecation
+  conforms: true
+  evidence: isDeprecated / deprecationReason markers are present in the published introspection document.
+- id: oauth2
+  conforms: true
+  evidence: >-
+    Insights Location API uses an OAuth 2.0 client-credentials grant (RFC 6749); the Postman
+    collection declares auth type oauth2 and the docs publish the token-request parameter set.
+  scope: TELUS Insights Location API only
+- id: oauth2-discovery-rfc8414
+  conforms: false
+  evidence: /.well-known/oauth-authorization-server returns 404 on the gateway and 403 on auth-gateway.telus.com.
+- id: oidc
+  conforms: false
+  evidence: No /.well-known/openid-configuration is reachable on any TELUS host.
+- id: jwt-rfc7519
+  conforms: true
+  evidence: >-
+    CHR Enterprise API requires a consumer-signed JWT with iss and a <= 900-second exp, signed
+    RS512 against a registered 2048-bit RSA public key.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: No application/problem+json response is documented or observed on either API.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: >-
+    No TELUS-owned /.well-known/security.txt was found. The only valid one on a TELUS documentation
+    host belongs to Intercom, the help-centre vendor.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation response headers are documented on either API.
+- id: rfc7807-vs-graphql-errors
+  conforms: partial
+  evidence: CHR uses the standard GraphQL errors array; Insights returns ad-hoc JSON error bodies.
+- id: iso8601-datetimes
+  conforms: true
+  evidence: >-
+    Insights publishes "We use the ISO8601 format for all our start and end times"; CHR declares
+    ISO8601Date, ISO8601DateTime, DateTimeWithTimezone and PartialDate scalars.
+- id: rfc9110-http-semantics
+  conforms: true
+  evidence: >-
+    Insights uses 202 Accepted for enqueued long-running jobs, 206 Partial Content for paginated
+    lists, 412 Precondition Failed for invalid geometry, and returns a hypermedia `link` object on
+    every job response.
+- id: pagination
+  conforms: true
+  evidence: >-
+    Insights offset pagination (limit/offset/sort, default limit 15, default sort -createdDate);
+    CHR Relay cursor pagination (default 50, max 100).
+- id: idempotency
+  conforms: false
+  evidence: >-
+    Neither API documents an idempotency key or any retry-safety contract for write operations.
+- id: webhooks
+  conforms: true
+  evidence: >-
+    CHR Enterprise API Event Notification Service delivers 21 signed webhook topics with a
+    documented 5/10/20/60/120-minute retry backoff. See asyncapi/telus-chr-event-notifications.yml.
+  scope: TELUS Health CHR Enterprise API only
+- id: asyncapi
+  conforms: false
+  evidence: No AsyncAPI document is published for the ENS webhook surface.
+- id: webhook-signature
+  conforms: true
+  evidence: >-
+    "The CHR signs each notification with a 'secret'. The resulting signature is included in the
+    request header." Header name not published.
+- id: fhir-r4
+  conforms: false
+  evidence: >-
+    The CHR Enterprise API is a bespoke GraphQL schema; no FHIR resource shapes, no /metadata
+    CapabilityStatement, no FHIR endpoint. Notable given the product is a Canadian EMR.
+- id: smart-on-fhir
+  conforms: false
+  evidence: No SMART App Launch, no scopes, no authorization server.
+- id: hl7v2
+  conforms: partial
+  evidence: >-
+    A saveOlisLabMessage mutation ingests Ontario Laboratories Information System lab messages, and
+    labObservations / labTestNames queries expose the results — a real lab-messaging seam, but
+    exposed through the GraphQL schema rather than as an HL7 interface.
+- id: camara
+  conforms: false
+  evidence: >-
+    TELUS is a named CAMARA participant (six staff in camaraproject/Governance PARTICIPANTS.MD, and
+    an Operators entry in camara-landscape) but publishes no first-party CAMARA endpoint. Number
+    Verification and SIM Swap reach developers through EnStream LP -> Aduna -> CPaaS partners.
+- id: gsma-open-gateway
+  conforms: false
+  evidence: No Open Gateway property, announcement or MoU evidence was found.
+- id: tmforum-open-api
+  conforms: false
+  evidence: No TM Forum Open API conformance certification was found published for TELUS.
+- id: scim2
+  conforms: false
+- id: odata
+  conforms: false
+- id: json-api
+  conforms: false
+- id: grpc
+  conforms: false
+  evidence: No .proto definitions published on any TELUS property or on buf.build.
+
+compliance_claims:
+- claim: Privacy by Design certification
+  scope: TELUS Insights
+  evidence: >-
+    "Achieved Privacy By Design certification" — published in the Data Privacy section of the
+    Insights Location API documentation at https://docs.insights.telus.com/.
+  verified_independently: false
+- claim: Data residency in Canada
+  scope: TELUS Insights
+  evidence: '"All data is stored in Canada within secure data facilities."'
+- claim: Privacy and Security by Design Standards
+  scope: TELUS Insights
+  evidence: >-
+    "We have developed an advanced set of privacy and security de-identification techniques
+    leveraging the Privacy and Security by Design Standards."
+- claim: Aggregation and extrapolation privacy floor
+  scope: TELUS Insights
+  evidence: >-
+    Minimum 20 devices post-extrapolation, counts rounded up to the nearest 10, results at a minimum
+    of 15-minute intervals, pseudonymous persistent identifiers replacing key identifiers.
+- claim: Privacy & Security questionnaire before production access
+  scope: TELUS Health CHR Enterprise API
+  evidence: https://help.inputhealth.com/en/articles/6368814-enterprise-api-onboarding-overview
+- claim: No PHI in event payloads
+  scope: TELUS Health CHR Enterprise API
+  evidence: >-
+    "The notification payload contains only IDs and other fields, no personal information or
+    personal health information."
+- claim: 90-day API audit-log retention
+  scope: TELUS Health CHR Enterprise API
+  evidence: All API actions are recorded; requests and responses retained for 90 days.
+
+certifications_published:
+  soc2: not published
+  iso27001: not published
+  pci_dss: not published
+  hipaa: not published
+  phipa: not published
+  fedramp: not published
+  note: >-
+    No TELUS trust centre or certifications page was found (trust.telus.com and security.telus.com
+    do not resolve). The Privacy by Design certification claim above is published inside API
+    documentation, not on a compliance page, so no `Compliance` pointer is wired in apis.yml.

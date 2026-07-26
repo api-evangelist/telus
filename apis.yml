@@ -9,14 +9,19 @@ description: >-
   API value chain TELUS is a network owner rather than a developer-facing platform: its API Marketplace
   at api.telus.com sits behind the TELUS Client Identity login, its developers.telus.com "Simplify"
   portal is an internal/partner surface that refuses anonymous requests, and its IoT Marketplace is a
-  login wall. The one genuinely public developer surface is the TELUS Insights Location API, a
-  geo-intelligence product documented openly on Postman with a live OAuth2-protected gateway, though
-  credentials are issued only through a sales onboarding process. TELUS is a named participant in the
-  CAMARA project and appears in the CAMARA landscape as an operator, but it publishes no first-party
-  CAMARA endpoint — its Number Verification and SIM Swap network APIs reach developers indirectly
-  through EnStream LP, the Bell/Rogers/TELUS identity joint venture, which feeds Aduna and from there
-  CPaaS channels such as Vonage. TELUS is partner-gated and, for network APIs, reachable only through
-  aggregators.
+  login wall. Two TELUS APIs are nonetheless documented in the open, and neither is on a telus.com
+  property. The TELUS Insights Location API publishes a 27-operation reference through Postman
+  Documenter and runs a live OAuth2-protected gateway. The TELUS Health Collaborative Health Record
+  (CHR) Enterprise API is a substantial GraphQL platform — 505 types, 64 queries, 49 mutations and a
+  21-topic signed webhook service — whose full introspection document is anonymously fetchable from
+  apidocs.ca.inputhealth.com, making it the only machine-readable API contract TELUS publishes
+  anywhere. Both are gated commercially: Insights credentials come from a sales-led ticket in the
+  Insights Portal, and CHR Enterprise API access is a paid feature enabled per clinic account after a
+  contract and a privacy questionnaire. TELUS is a named participant in the CAMARA project and appears
+  in the CAMARA landscape as an operator, but it publishes no first-party CAMARA endpoint — its Number
+  Verification and SIM Swap network APIs reach developers indirectly through EnStream LP, the
+  Bell/Rogers/TELUS identity joint venture, which feeds Aduna and from there CPaaS channels such as
+  Vonage. TELUS is partner-gated and, for network APIs, reachable only through aggregators.
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
 - Telecommunications
@@ -31,6 +36,11 @@ tags:
 - Location Intelligence
 - IoT
 - 5G
+- Healthcare
+- Electronic Medical Records
+- GraphQL
+- Webhooks
+- Geospatial
 created: '2026-07-25'
 modified: '2026-07-25'
 specificationVersion: '0.19'
@@ -62,13 +72,89 @@ apis:
     url: https://docs.insights.telus.com/
   - type: PostmanCollection
     url: collections/telus-insights-location-api.postman_collection.json
+  - type: Postman
+    url: https://docs.insights.telus.com/
+    note: Public Postman Documenter publication (collection 19774759 / 2s93z9cNmr); the collection JSON is anonymously downloadable.
   - type: Portal
     url: https://insights.telus.com/
+  - type: Authentication
+    url: authentication/telus-authentication.yml
+  - type: OAuthScopes
+    url: scopes/telus-scopes.yml
+  - type: RateLimits
+    url: rate-limits/telus-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/telus-problem-types.yml
+  - type: Sandbox
+    url: sandbox/telus-sandbox.yml
+- aid: telus:telus-health-chr-enterprise-api
+  name: TELUS Health CHR Enterprise API
+  description: >-
+    The TELUS Health Collaborative Health Record (CHR) Enterprise API is a GraphQL interface onto the
+    CHR ambulatory-care platform used by Canadian clinics and allied health professionals. Its published
+    introspection document describes 505 types, 64 root queries and 49 mutations spanning patients,
+    appointments and availability, encounters, referrals, cases, tasks, group visits, attachments,
+    letters, lab results (including OLIS lab messages), allergy and medication records, health profiles,
+    facilities, providers and work hours. Pagination follows the GraphQL Cursor Connections
+    specification (default 50, maximum 100 records per page). Authentication is unusual and notably
+    strong: the consumer generates a 2048-bit RSA key pair, registers the public key on an API Consumer
+    inside the CHR account, and signs its own RS512 JWT that must carry a matching iss claim and expire
+    within 900 seconds — there is no authorization server, no token endpoint and no client secret. A
+    companion Event Notification Service pushes 21 signed webhook topics carrying identifiers only, with
+    no personal or personal-health information in the payload. Every API action is audit-logged for 90
+    days. The API ships on a bi-weekly release train with a dated public changelog going back to 2022,
+    but it is a paid feature available to select customers, and the executable endpoint is issued per
+    clinic account rather than published.
+  humanURL: https://help.inputhealth.com/en/collections/3317215-chr-enterprise-api
+  baseURL: https://apidocs.ca.inputhealth.com/enterprise-api
+  baseURLNote: >-
+    The live GraphQL endpoint is issued per CHR account domain and is read from Settings > Enterprise
+    API inside the account; TELUS does not publish it. The URL recorded here is the public,
+    anonymously reachable schema surface for the same API — the GraphQL Voyager explorer, whose
+    introspection document at /enterprise-api/introspection.json was harvested verbatim into graphql/.
+  tags:
+  - Healthcare
+  - Electronic Medical Records
+  - GraphQL
+  - Appointments
+  - Referrals
+  - Canada
+  - Webhooks
+  properties:
+  - type: GraphQL
+    url: graphql/telus-chr-enterprise-api.graphql
+  - type: GraphQLIntrospection
+    url: graphql/telus-chr-enterprise-api-introspection.json
+  - type: Documentation
+    url: https://help.inputhealth.com/en/collections/3317215-chr-enterprise-api
+  - type: APIReference
+    url: https://help.inputhealth.com/en/articles/5941595-api-reference-documentation
+  - type: GettingStarted
+    url: https://help.inputhealth.com/en/articles/6368814-enterprise-api-onboarding-overview
+  - type: SchemaExplorer
+    url: https://apidocs.ca.inputhealth.com/enterprise-api
+    note: GraphQL Voyager rendering of the published introspection document.
+  - type: Authentication
+    url: authentication/telus-authentication.yml
+  - type: Webhooks
+    url: asyncapi/telus-chr-event-notifications.yml
+  - type: ChangeLog
+    url: https://help.inputhealth.com/en/articles/13391004-what-s-new-in-the-api-2026
+  - type: ErrorCatalog
+    url: errors/telus-problem-types.yml
+  - type: DataModel
+    url: data-model/telus-data-model.yml
+  - type: Sandbox
+    url: sandbox/telus-sandbox.yml
 common:
 - type: Website
   url: https://www.telus.com/
 - type: Documentation
   url: https://docs.insights.telus.com/
+- type: APIReference
+  url: https://help.inputhealth.com/en/articles/5941595-api-reference-documentation
+- type: GettingStarted
+  url: https://help.inputhealth.com/en/articles/6368814-enterprise-api-onboarding-overview
 - type: DeveloperPortal
   url: https://api.telus.com/
   note: TELUS API Marketplace — redirects anonymous requests to the TELUS Client Identity login wall.
@@ -80,6 +166,52 @@ common:
   url: https://github.com/telus
 - type: Blog
   url: https://www.telus.com/en/blog
+- type: PrivacyPolicy
+  url: https://www.telus.com/en/about/privacy/commitment
+- type: TermsOfService
+  url: https://www.telus.com/en/about/policies-and-disclosures/user-terms
+- type: Security
+  url: https://www.telus.com/en/about/security/report-a-problem
+  note: TELUS security-issue reporting page; Cloudflare returns 403 to automated clients so the contact address could not be read anonymously.
+- type: Postman
+  url: https://docs.insights.telus.com/
+  note: Public Postman Documenter publication of the TELUS Insights Location API.
+- type: ChangeLog
+  url: changelog/telus-changelog.yml
+- type: Authentication
+  url: authentication/telus-authentication.yml
+- type: OAuthScopes
+  url: scopes/telus-scopes.yml
+- type: Conventions
+  url: conventions/telus-conventions.yml
+- type: ErrorCatalog
+  url: errors/telus-problem-types.yml
+- type: RateLimits
+  url: rate-limits/telus-rate-limits.yml
+- type: Lifecycle
+  url: lifecycle/telus-lifecycle.yml
+- type: Conformance
+  url: conformance/telus-conformance.yml
+- type: DataModel
+  url: data-model/telus-data-model.yml
+- type: Packages
+  url: packages/telus-packages.yml
+- type: Components
+  url: components/telus-components.yml
+- type: Sandbox
+  url: sandbox/telus-sandbox.yml
+- type: Webhooks
+  url: asyncapi/telus-chr-event-notifications.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/telus-llms.txt
+- type: WellKnown
+  url: well-known/telus-well-known.yml
+- type: DomainSecurity
+  url: security/telus-domain-security.yml
+- type: VulnerabilityDisclosure
+  url: security/telus-vulnerability-disclosure.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

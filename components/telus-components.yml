@@ -1,0 +1,65 @@
+generated: '2026-07-25'
+method: searched
+source: https://telus.github.io/universal-design-system/ (HTTP 200) and the npm @telus-uds scope
+description: >-
+  TELUS ships one genuine, publicly consumable client-side component surface: the TELUS Universal
+  Design System (UDS). It is multi-brand — TELUS (Allium), Koodo and Public Mobile — built as
+  themable React Native components that also render as ordinary React components on web, and it is
+  published openly on npm and documented on a public GitHub Pages site even though the source repo
+  itself is private. These are UI components for building TELUS-branded front ends; they are not
+  API embeds and they do not talk to either publicly documented TELUS API.
+
+name: TELUS Universal Design System (UDS)
+docs: https://telus.github.io/universal-design-system/
+getting_started: https://telus.github.io/universal-design-system/components/allium/web/
+architecture: https://telus.github.io/universal-design-system/develop/architecture/
+component_libraries: https://telus.github.io/universal-design-system/develop/component-libraries/
+base_components: https://telus.github.io/universal-design-system/develop/base-components/
+omnichannel: https://telus.github.io/universal-design-system/develop/omnichannel-applications/
+source_repo: https://github.com/telus/universal-design-system
+source_repo_public: false
+registry_scope: https://www.npmjs.com/org/telus-uds
+technology: React Native primitives, consumable as React on web; no extra setup for web apps
+theming: Components ship with no default theme; a palette + theme pair must be installed and wrapped in a brand provider (for example AlliumProvider) once at the application root.
+
+layers:
+- layer: palettes
+  description: Brand colour and primitive token sets.
+  packages: ['@telus-uds/palette-allium', '@telus-uds/palette-koodo', '@telus-uds/palette-public-mobile']
+- layer: themes
+  description: Brand themes that bind a palette to component appearance.
+  packages: ['@telus-uds/theme-allium', '@telus-uds/theme-koodo', '@telus-uds/theme-public-mobile']
+- layer: base components
+  description: Themable atomic components shared by every brand.
+  packages: ['@telus-uds/components-base', '@telus-uds/components-web']
+- layer: brand component library
+  description: Pre-bound component library for the TELUS brand.
+  packages: ['@telus-uds/ds-allium']
+- layer: tokens and tooling
+  description: Design-token schema, tooling and shared constants.
+  packages: ['@telus-uds/system-tokens', '@telus-uds/system-theme-tokens', '@telus-uds/system-constants']
+
+brands: [TELUS (Allium), Koodo, Public Mobile]
+
+install_examples:
+- npm install @telus-uds/ds-allium
+- npm install @telus-uds/palette-allium @telus-uds/theme-allium
+
+superseded:
+- name: TELUS Design System (TDS)
+  packages: ['@telusdigital/tds', '@tds/core-colours']
+  hosts: [https://designsystem.telus.com, https://tds.telus.com]
+  status: >-
+    Both hosts now serve expired TLS certificates; the npm packages have not been published since
+    2019/2022. UDS is the live successor.
+
+api_embeds:
+  published: false
+  note: >-
+    Neither the Insights Location API nor the CHR Enterprise API ships an embeddable widget, hosted
+    field, drop-in element or embedded dashboard for third-party sites. The only "prebuilt surface"
+    on either product is the TELUS Insights Portal Data Job tool, which is a first-party console
+    behind the sign-in wall — see sandbox/telus-sandbox.yml.
+
+related:
+  packages: packages/telus-packages.yml

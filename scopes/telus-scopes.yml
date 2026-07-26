@@ -1,0 +1,35 @@
+generated: '2026-07-25'
+method: searched
+source: https://docs.insights.telus.com/ — "Introduction - API Integrations" and "Getting Started - Authentication"
+description: >-
+  The only OAuth 2.0 surface TELUS documents publicly is the Insights Location API's client-
+  credentials grant. TELUS does document that a `scope` parameter is sent on the token request, but
+  it does not publish any scope VALUES: the documentation tells the consumer to copy
+  oauth_client_id, oauth_client_secret, oauth_token_endpoint, oauth_grant_type and oauth_scope from
+  the "My Account" page of the TELUS Insights Portal after onboarding. There is therefore a real
+  scope parameter with a per-customer, unpublished value — recorded here as an honest empty
+  registry rather than an invented one. The TELUS Health CHR Enterprise API has no scopes at all:
+  it authenticates with a self-signed RS512 JWT and, per its own documentation, an API Consumer
+  provides "unrestricted access to your organization's CHR data" (there is no scoping layer).
+schemes:
+- name: InsightsOAuth2ClientCredentials
+  api: TELUS Insights Location API
+  type: oauth2
+  flows:
+  - flow: clientCredentials
+    tokenUrl: null
+    tokenUrlPublished: false
+    scopeParameterSupported: true
+  source: collections/telus-insights-location-api.postman_collection.json
+scopes: []
+scopes_published: false
+scopes_note: >-
+  Zero scope values are published anonymously. Do not assume a scope string — request the
+  oauth_scope value with the credentials issued through the Insights Portal ticket process.
+no_scope_surfaces:
+- api: TELUS Health CHR Enterprise API
+  reason: >-
+    Self-signed JWT bearer (RS512); authorization is all-or-nothing per API Consumer, not scoped.
+  source: https://help.inputhealth.com/en/articles/6483229-creating-api-consumers
+related:
+  authentication: authentication/telus-authentication.yml

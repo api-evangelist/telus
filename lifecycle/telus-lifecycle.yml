@@ -1,0 +1,106 @@
+generated: '2026-07-25'
+method: searched
+source: >-
+  https://docs.insights.telus.com/ and
+  https://help.inputhealth.com/en/collections/3317215-chr-enterprise-api, plus live host probes on
+  2026-07-25.
+description: >-
+  Versioning, deprecation, retention and availability posture across the two publicly documented
+  TELUS APIs. The two surfaces are at opposite ends of the maturity curve: the CHR Enterprise API
+  runs a bi-weekly release train with a dated public changelog and an announce-then-replace
+  deprecation habit, while the Insights Location API has a URI version segment and nothing else.
+
+apis:
+- api: TELUS Insights Location API
+  versioning:
+    scheme: uri-path
+    current: v1
+    location: https://location-api.insights.telus.com/product/insightsRequest/v1
+    docs: https://docs.insights.telus.com/
+  deprecation:
+    policy_url: null
+    policy_published: false
+    sunset_header: false
+    deprecation_header: false
+  data_lifecycle:
+    data_available_from: '2019-01-01'
+    retention_years: 5
+    known_data_gaps: [2021-06-14, 2021-06-15, 2021-06-16]
+    recency: 'Network data processed every 5 minutes; available in the warehouse within 1-2 hours; results at >= 15 minute intervals.'
+    residency: All data stored in Canada.
+  sla:
+    url: null
+    uptime_target: null
+    published: false
+  status_page: null
+  support: https://support.api.telus.com/
+  deprecated_operations: []
+- api: TELUS Health CHR Enterprise API
+  versioning:
+    scheme: release-train
+    version_format: YY.WW
+    current: '26.13'
+    cadence: bi-weekly, plus off-schedule releases for out-of-band fixes
+    docs: https://help.inputhealth.com/en/collections/3317215-chr-enterprise-api
+  deprecation:
+    policy_url: null
+    policy_published: false
+    announcements_url: https://help.inputhealth.com/en/articles/13391004-what-s-new-in-the-api-2026
+    practice: >-
+      Deprecations, replacements and removals are announced per version in the dated public
+      changelog. Observed pattern: a field is deprecated with a named replacement (middleInitial ->
+      middleName, 23.14) or removed with a stated reason (createAppointmentOptions "removed as the
+      functionality has been replaced", 23.24; consentToDeferredPrescription "removed as it is for
+      internal CHR use only", 23.12). No machine-readable Deprecation/Sunset headers and no fixed
+      notice period are published.
+    sunset_header: false
+    deprecation_header: false
+    schema_deprecation_markers: true
+    schema_deprecation_note: >-
+      The published GraphQL introspection document carries the standard isDeprecated /
+      deprecationReason markers on fields and enum values, so deprecations are machine-readable in
+      graphql/telus-chr-enterprise-api.graphql (rendered as @deprecated directives).
+  data_lifecycle:
+    api_log_retention_days: 90
+    api_log_statement: All API actions are recorded; requests and responses are retained for 90 days.
+    api_log_viewer: https://help.inputhealth.com/en/articles/6483231-viewing-api-logs
+  sla:
+    url: null
+    uptime_target: null
+    published: false
+  status_page: null
+  onboarding_lifecycle:
+    phases: [Discovery, Purchase, Development, Go Live]
+    gates:
+    - Sign CHR Enterprise API contract/agreement
+    - Privacy & Security questionnaire required prior to production access
+    - Sandbox domain credentials before production domain access
+    url: https://help.inputhealth.com/en/articles/6368814-enterprise-api-onboarding-overview
+  availability_note: Paid feature, currently available to select customers only.
+
+status_page:
+  published: false
+  probes:
+  - url: https://status.telus.com/
+    status: DNS NXDOMAIN
+  - url: https://status.insights.telus.com/
+    status: DNS NXDOMAIN
+  note: >-
+    No public status page exists for any TELUS API. Consumer network-outage information is served
+    from www.telus.com, which is Cloudflare-gated to automated clients and is not an API status page.
+
+roadmap:
+  published: false
+  note: >-
+    "Product notifications" and a "More to come" list appear inside the Insights Portal behind the
+    sign-in wall; no public roadmap page was found for either API.
+
+dangling_properties:
+- url: https://designsystem.telus.com
+  status: TLS certificate expired
+- url: https://tds.telus.com
+  status: TLS certificate expired
+  note: >-
+    Superseded by the Universal Design System, which is actively published at
+    https://telus.github.io/universal-design-system/ and on npm under @telus-uds — see
+    components/telus-components.yml.

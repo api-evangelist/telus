@@ -1,0 +1,48 @@
+generated: '2026-07-25'
+method: generated
+description: >-
+  Packaged Agent Skills for the two publicly documented TELUS APIs. Every step in every skill is
+  grounded in an operation that exists verbatim in a provider-published artifact harvested into this
+  repository — the TELUS Insights Postman collection and the TELUS Health CHR GraphQL introspection
+  document. No operation, argument or field name was invented.
+provider_published_skills: false
+provider_published_skills_note: >-
+  TELUS publishes no AGENTS.md, skill files, or agent-facing operating instructions for either API.
+skills:
+- file: telus-insights-study-zone-analysis.md
+  name: Run a TELUS Insights study-zone analysis
+  api: TELUS Insights Location API
+  source: collections/telus-insights-location-api.postman_collection.json
+  operations:
+  - POST /shapefile
+  - GET /shapefile/{requestId}
+  - GET /shapefile
+  - GET /geofence
+  - POST /count/{type}
+  - GET /count/{type}/{jobId}
+  - GET /job
+  - PATCH /job/{jobid}/cancel
+  - DELETE /job/{jobid}
+  - GET /usage
+- file: telus-chr-book-appointment.md
+  name: Book a CHR appointment
+  api: TELUS Health CHR Enterprise API
+  source: graphql/telus-chr-enterprise-api.graphql
+  operations: [patients, patient, createPatient, locations, providers, services, availabilities, createAppointment, updateAppointment, appointments, upcomingAppointments]
+- file: telus-chr-event-notifications.md
+  name: Consume CHR event notifications
+  api: TELUS Health CHR Enterprise API
+  source: asyncapi/telus-chr-event-notifications.yml
+  operations: [appointment, patient, task, referralRecord, respondent]
+cross_cutting_rules:
+- No idempotency key exists on either API — never blind-retry a write.
+- Insights tokens live 299 seconds and must be reused; CHR JWTs must expire within 900 seconds and are self-signed.
+- Insights requires both an OAuth bearer token and a customerId header on every call.
+- CHR returns field errors in the GraphQL errors array with HTTP 200 — inspect errors, not just status.
+- Honour the Insights usage guidance (10 queries/hour, 100/day, 5 concurrent) — it is unenforced but real.
+related:
+  conventions: conventions/telus-conventions.yml
+  errors: errors/telus-problem-types.yml
+  authentication: authentication/telus-authentication.yml
+  rate_limits: rate-limits/telus-rate-limits.yml
+  sandbox: sandbox/telus-sandbox.yml
