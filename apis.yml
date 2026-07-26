@@ -1,0 +1,85 @@
+aid: telus
+url: https://raw.githubusercontent.com/api-evangelist/telus/refs/heads/main/apis.yml
+name: TELUS
+kind: company
+description: >-
+  TELUS Corporation is one of Canada's three national facilities-based telecommunications carriers,
+  operating a nationwide mobile network alongside broadband, TV, security, health (TELUS Health) and
+  agriculture (TELUS Agriculture & Consumer Goods) businesses from its Vancouver headquarters. In the
+  API value chain TELUS is a network owner rather than a developer-facing platform: its API Marketplace
+  at api.telus.com sits behind the TELUS Client Identity login, its developers.telus.com "Simplify"
+  portal is an internal/partner surface that refuses anonymous requests, and its IoT Marketplace is a
+  login wall. The one genuinely public developer surface is the TELUS Insights Location API, a
+  geo-intelligence product documented openly on Postman with a live OAuth2-protected gateway, though
+  credentials are issued only through a sales onboarding process. TELUS is a named participant in the
+  CAMARA project and appears in the CAMARA landscape as an operator, but it publishes no first-party
+  CAMARA endpoint — its Number Verification and SIM Swap network APIs reach developers indirectly
+  through EnStream LP, the Bell/Rogers/TELUS identity joint venture, which feeds Aduna and from there
+  CPaaS channels such as Vonage. TELUS is partner-gated and, for network APIs, reachable only through
+  aggregators.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Telecommunications
+- Canada
+- Mobile Network Operator
+- Broadband
+- Network APIs
+- CAMARA
+- Open Gateway
+- SIM Swap
+- Identity Verification
+- Location Intelligence
+- IoT
+- 5G
+created: '2026-07-25'
+modified: '2026-07-25'
+specificationVersion: '0.19'
+apis:
+- aid: telus:telus-insights-location-api
+  name: TELUS Insights Location API
+  description: >-
+    The TELUS Insights Location API exposes de-identified, aggregated geo-intelligence derived from the
+    TELUS mobile network across Canada. Consumers submit asynchronous count jobs — demographic, origin,
+    destination, origin-destination matrix, dwell time, trade area, repeat visitation, total trip, unique
+    devices, home and work — against uploaded shapefile study zones or built-in geofences, then poll a
+    job identifier for results. Documentation is published publicly through Postman; the gateway at
+    location-api.insights.telus.com is live and returns 401 without a bearer token. Access uses OAuth2
+    client credentials issued through the TELUS Insights Portal after a sales-led onboarding, so the
+    API is documented publicly but is not self-serve.
+  humanURL: https://docs.insights.telus.com/
+  baseURL: https://location-api.insights.telus.com/product/insightsRequest/v1
+  tags:
+  - Location Intelligence
+  - Geospatial
+  - Mobility Data
+  - Analytics
+  - Canada
+  - Privacy
+  properties:
+  - type: Documentation
+    url: https://docs.insights.telus.com/
+  - type: APIReference
+    url: https://docs.insights.telus.com/
+  - type: PostmanCollection
+    url: collections/telus-insights-location-api.postman_collection.json
+  - type: Portal
+    url: https://insights.telus.com/
+common:
+- type: Website
+  url: https://www.telus.com/
+- type: Documentation
+  url: https://docs.insights.telus.com/
+- type: DeveloperPortal
+  url: https://api.telus.com/
+  note: TELUS API Marketplace — redirects anonymous requests to the TELUS Client Identity login wall.
+- type: Support
+  url: https://support.api.telus.com/
+- type: LinkedIn
+  url: https://www.linkedin.com/company/telus
+- type: GitHubOrganization
+  url: https://github.com/telus
+- type: Blog
+  url: https://www.telus.com/en/blog
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

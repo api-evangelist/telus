@@ -1,0 +1,277 @@
+aid: telus
+name: TELUS
+review:
+  question: >-
+    Does TELUS publish a public, self-serve developer portal with downloadable API definitions, and
+    what is its CAMARA / GSMA Open Gateway posture?
+  answer: false
+  date: '2026-07-25'
+  reviewer: API Evangelist
+  homeMarket: Canada
+  tier: mno-carrier
+findings:
+  summary: |
+    TELUS is a Canadian national carrier with a partner-gated API posture. Its branded API
+    Marketplace at api.telus.com is a login wall (anonymous requests 403 and redirect to the TELUS
+    Client Identity login at www.telus.com/telus-login-v2). developers.telus.com resolves but
+    actively resets anonymous TLS connections — it is the internal/enterprise "Simplify" developer
+    portal, not a public one. iot.telus.com is an "IoT Marketplace" login page. No Open Gateway or
+    network-API subdomain exists at all (opengateway.telus.com and developer.telus.com do not
+    resolve; www.telus.com/opengateway is not served).
+
+    Exactly one genuinely public developer surface was found: the TELUS Insights Location API, whose
+    reference documentation is published openly via Postman Documenter at docs.insights.telus.com
+    (HTTP 200). The underlying collection JSON is anonymously fetchable and was harvested verbatim.
+    The production gateway host is live and correctly returns 401 without a token. Onboarding,
+    however, is sales-led: the documentation states OAuth credentials are obtained "by creating a
+    ticket in the Portal" and that activation arrives by email from dlTelusInsights@telus.com. So:
+    public documentation, gated access.
+
+    No OpenAPI or Swagger definition is published anywhere. The Insights documentation refers the
+    reader to a "Swagger file" for request-body detail, but that file is behind the Insights Portal;
+    every anonymous spec path probed returned 404 (on the gateway) or an SPA catch-all (on the
+    portal). Zero OpenAPI documents were harvested.
+
+    CAMARA posture, plainly stated: TELUS is a real participant in the standards body but publishes
+    nothing callable itself. Six TELUS staff are listed by name in camaraproject/Governance
+    PARTICIPANTS.MD, and TELUS appears in camaraproject/camara-landscape landscape.yml under
+    "Operation / Operators". Commercially, TELUS reaches developers only through an aggregator
+    chain: EnStream LP — the mobile-identity joint venture owned by Bell Mobility, Rogers and
+    TELUS — partnered with Aduna (the Ericsson-led carrier JV) in February 2025 to expose Canadian
+    Number Verification and SIM Swap network APIs, and in June 2026 Vonage commercially launched
+    SIM Swap Detection and Silent Authentication in Canada over that same Aduna/EnStream path. A
+    developer who wants a TELUS network API buys it from Vonage or Aduna, never from TELUS. This is
+    the central finding for this provider.
+  developerPortal:
+    firstPartyPublicPortal: false
+    probes:
+    - url: https://developer.telus.com
+      status: DNS NXDOMAIN
+    - url: https://developers.telus.com/
+      status: connection reset / TLS reset for anonymous clients
+      note: Internal "Simplify" developer portal + API Marketplace guides; not publicly readable.
+    - url: https://api.telus.com/
+      status: 403 -> redirect to https://www.telus.com/telus-login-v2/login (TELUS Client Identity)
+      note: TELUS API Marketplace. Login wall.
+    - url: https://support.api.telus.com/
+      status: 200
+      note: API Marketplace Support Center.
+    - url: https://docs.telus.com/
+      status: 200
+      note: Pydio document-management app, not API documentation.
+    - url: https://docs.insights.telus.com/
+      status: 200
+      note: REAL public API documentation (Postman Documenter). The only one.
+    - url: https://insights.telus.com/
+      status: 200
+      note: TELUS Insights Portal SPA; sign-in required, onboarding by email invitation.
+    - url: https://location-api.insights.telus.com/product/insightsRequest/v1/usage
+      status: 401
+      note: Live production gateway (Kong); correctly rejects anonymous requests.
+    - url: https://iot.telus.com
+      status: 200 -> /login ("Login - IoT Marketplace")
+      note: IoT connectivity management behind a login wall; no public API documentation.
+    - url: https://opengateway.telus.com
+      status: DNS NXDOMAIN
+    - url: https://www.telus.com/opengateway
+      status: 403 (Cloudflare bot block on www.telus.com for all paths)
+    - url: https://apis.telus.com
+      status: DNS NXDOMAIN
+    - url: https://networkapi.telus.com
+      status: DNS NXDOMAIN
+    - url: https://designsystem.telus.com
+      status: TLS certificate expired
+      note: TELUS Design System — dangling/neglected first-party developer property.
+    - url: https://tds.telus.com
+      status: TLS certificate expired
+    verdict: >-
+      Partner-gated. One public documentation site (docs.insights.telus.com), no self-serve signup
+      anywhere, and the branded API Marketplace is a login wall.
+  specsHarvested:
+    openapi: 0
+    note: >-
+      No OpenAPI or Swagger document is published publicly by TELUS. The openapi/ directory is
+      deliberately absent because nothing real was found.
+    probes:
+    - url: https://location-api.insights.telus.com/openapi.json
+      status: 404
+    - url: https://location-api.insights.telus.com/openapi.yaml
+      status: 404
+    - url: https://location-api.insights.telus.com/swagger.json
+      status: 404
+    - url: https://location-api.insights.telus.com/api-docs
+      status: 404
+    - url: https://location-api.insights.telus.com/v3/api-docs
+      status: 404
+    - url: https://insights.telus.com/swagger.json
+      status: 200 but SPA index.html catch-all, not a spec
+  artifactsHarvested:
+  - type: PostmanCollection
+    path: collections/telus-insights-location-api.postman_collection.json
+    sourceURL: https://docs.insights.telus.com/api/collections/19774759/2s93z9cNmr?environment=23335868-e59821b2-22e0-4911-b22e-f3ee67fd0bd4&segregateAuth=true&versionTag=latest
+    httpStatus: 200
+    contentType: application/json
+    bytes: 269775
+    fetched: '2026-07-25'
+    operations: 27
+    note: Saved verbatim. Postman Documenter publication of the TELUS Insights Location API.
+  camara:
+    posture: >-
+      CAMARA participant with no first-party endpoint — TELUS network APIs reach developers only
+      through the EnStream joint venture into Aduna and onward via CPaaS partners.
+    isImplementation: false
+    pressReleaseOnly: false
+    evidence:
+    - source: https://raw.githubusercontent.com/camaraproject/Governance/main/PARTICIPANTS.MD
+      finding: >-
+        Six TELUS individuals listed as CAMARA participants (Ali Tizghadam, Jim Slevinksy, Oswaldo
+        Lauschner, Reda Zaza, Sana Tariq, Theohar Konomi). Bell Canada and Rogers are also listed.
+    - source: https://raw.githubusercontent.com/camaraproject/camara-landscape/main/landscape.yml
+      finding: >-
+        TELUS listed as an item under "Operation / Operators" with homepage https://www.telus.com/.
+        Rogers is listed likewise.
+    - source: https://www.ericsson.com/en/press-releases/2025/2/aduna-and-enstream-partner-to-unlock-canadas-telecom-network-apis-for-global-innovation
+      date: '2025-02-27'
+      finding: >-
+        Aduna and EnStream LP (the Bell/Rogers/TELUS joint venture) partner to expose Canadian
+        network APIs. Named APIs: Number Verification (silent authentication) and SIM Swap.
+    - source: https://www.businesswire.com/news/home/20260619393960/en/Vonage-Launches-Network-Powered-Solutions-for-Fraud-Prevention-Across-Canada
+      date: '2026-06-19'
+      finding: >-
+        Vonage commercially launched SIM Swap Detection and Silent Authentication in Canada,
+        connecting to Canadian carriers via Aduna's integration with EnStream. The developer-facing
+        product is Vonage's, not TELUS's.
+    apisWithEvidence:
+    - Number Verification
+    - SIM Swap
+    firstPartyCamaraEndpoint: false
+    channelToDevelopers:
+    - EnStream LP (Bell / Rogers / TELUS identity joint venture)
+    - Aduna (Ericsson-led carrier JV aggregator)
+    - Vonage (CPaaS channel partner, Canada, June 2026)
+  openGateway:
+    memberConfirmed: false
+    note: >-
+      No evidence found that TELUS signed the GSMA Open Gateway MoU. The GSMA supporters and
+      "which mobile operators are supporting Open Gateway" pages return 403 to automated clients, so
+      the operator list could not be read directly; no TELUS Open Gateway announcement was found in
+      search, and TELUS operates no Open Gateway property of its own. TELUS's participation is in
+      CAMARA (the specification project), and its route to market is Aduna via EnStream.
+  tmForum:
+    conformanceFound: false
+    note: >-
+      No TM Forum Open API conformance certification (TMF620, TMF622, TMF641 or otherwise) was found
+      published for TELUS. TM Forum's conformance directory is a membership resource and was not
+      readable anonymously; nothing on any TELUS property claims a TMF certification.
+  threeGppExposure:
+    nefOrScef: false
+    networkSlicingAPI: false
+    edgeMecAPI: false
+    note: >-
+      No public NEF/SCEF, network-slicing, or edge/MEC API surface. TELUS's public network-programme
+      visibility is in Open RAN, not in network exposure APIs.
+  auth:
+    schemes:
+    - name: OAuth2 client credentials
+      where: TELUS Insights Location API
+      note: >-
+        Postman collection declares auth type oauth2. Documentation instructs setting
+        oauth_client_id / oauth_client_secret / oauth_token_endpoint / oauth_grant_type /
+        oauth_scope, obtained by raising a ticket in the Insights Portal. Token endpoint value is
+        not published anonymously.
+    - name: OAuth2 authorization code (PingFederate)
+      where: api.telus.com API Marketplace portal login
+      note: >-
+        Anonymous requests redirect to
+        https://auth-gateway.telus.com/as/authorization.oauth2 with
+        scope=ciiLogin identityinfofulldetail serviceassociation. Human sign-in, not an API grant.
+    ciba: false
+    cibaNote: >-
+      CIBA (Client-Initiated Backchannel Authentication), which CAMARA specifies for network-based
+      authorization, does not appear anywhere on a TELUS property. Because TELUS publishes no
+      first-party CAMARA endpoint, any CIBA flow for Canadian network APIs lives at Aduna or the
+      CPaaS partner, not at TELUS.
+    wellKnown:
+    - url: https://auth-gateway.telus.com/.well-known/openid-configuration
+      status: 403 (Cloudflare)
+    - url: https://auth-gateway.telus.com/.well-known/oauth-authorization-server
+      status: 403 (Cloudflare)
+    - url: https://location-api.insights.telus.com/.well-known/openid-configuration
+      status: 404 ("no Route matched with those values" — Kong gateway)
+  webhooksAndEvents:
+    found: false
+    asyncapi: false
+    note: >-
+      No webhook or event catalog is published. The Insights Location API is asynchronous but uses
+      job polling (POST a job, GET /count/{type}/{jobId}), not callbacks.
+  graphqlGrpc:
+    graphql: false
+    grpc: false
+    note: No public GraphQL endpoint and no published .proto files were found.
+  sdks:
+    firstParty: []
+    note: >-
+      No first-party TELUS SDK packages found on npm, PyPI, Maven or NuGet for any TELUS API.
+      github.com/telus has 0 public repositories; github.com/telusdigital has 1 (a .github profile
+      pointing back to github.com/telus); github.com/telus-agcg has 21 repositories, all
+      general-purpose engineering tooling (nib, ffi-gdal, cast-ui, terraform providers) with no API
+      definitions. The Insights documentation provides shell/curl snippets only.
+  postman:
+    publicWorkspace: true
+    note: >-
+      The Insights documentation is a published Postman Documenter view (collection 19774759 /
+      2s93z9cNmr) and the collection JSON is anonymously downloadable.
+  channelPartners:
+    note: >-
+      TELUS Business Connect, the TELUS-branded UCaaS/CPaaS product, is a white-labelled RingCentral
+      service; its API documentation, SDKs and webhooks live on developers.ringcentral.com, not on
+      any TELUS property. Combined with the EnStream/Aduna/Vonage path for network APIs, TELUS's
+      developer relationship is entirely intermediated.
+  transports:
+  - protocol: REST
+    scheme: https
+    baseURL: https://location-api.insights.telus.com/product/insightsRequest/v1
+    documented: true
+  - protocol: GraphQL
+    documented: false
+  - protocol: gRPC
+    documented: false
+  - protocol: WebSocket
+    scheme: wss
+    documented: false
+  - protocol: Webhooks
+    documented: false
+sources:
+- url: https://docs.insights.telus.com/
+  type: Documentation
+  status: 200
+  note: TELUS Insights Location API reference, published via Postman Documenter.
+- url: https://docs.insights.telus.com/api/collections/19774759/2s93z9cNmr
+  type: PostmanCollection
+  status: 200
+  note: Machine-readable collection, harvested verbatim on 2026-07-25.
+- url: https://api.telus.com/
+  type: DeveloperPortal
+  status: 403
+  note: TELUS API Marketplace behind TELUS Client Identity login.
+- url: https://support.api.telus.com/
+  type: Support
+  status: 200
+- url: https://raw.githubusercontent.com/camaraproject/Governance/main/PARTICIPANTS.MD
+  type: Standard
+  status: 200
+  note: TELUS listed with six named participants.
+- url: https://raw.githubusercontent.com/camaraproject/camara-landscape/main/landscape.yml
+  type: Standard
+  status: 200
+  note: TELUS listed as an Operator in the CAMARA landscape.
+- url: https://www.ericsson.com/en/press-releases/2025/2/aduna-and-enstream-partner-to-unlock-canadas-telecom-network-apis-for-global-innovation
+  type: PressRelease
+  status: 200
+  note: Aduna + EnStream (Bell/Rogers/TELUS) — Number Verification and SIM Swap.
+- url: https://enstream.com/
+  type: Website
+  status: 200
+  note: >-
+    EnStream is sales-led. No developer or docs subdomain resolves (developer.enstream.com,
+    docs.enstream.com are NXDOMAIN).
