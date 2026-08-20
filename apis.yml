@@ -39,6 +39,24 @@ tags:
 - Healthcare
 - Electronic Medical Records
 - GraphQL
+- Webhook
+- Geospatial
+tags_raw:
+- Telecommunications
+- Canada
+- Mobile Network Operator
+- Broadband
+- Network APIs
+- CAMARA
+- Open Gateway
+- SIM Swap
+- Identity Verification
+- Location Intelligence
+- IoT
+- 5G
+- Healthcare
+- Electronic Medical Records
+- GraphQL
 - Webhooks
 - Geospatial
 created: '2026-07-25'
@@ -113,6 +131,14 @@ apis:
     anonymously reachable schema surface for the same API — the GraphQL Voyager explorer, whose
     introspection document at /enterprise-api/introspection.json was harvested verbatim into graphql/.
   tags:
+  - Healthcare
+  - Electronic Medical Records
+  - GraphQL
+  - Appointments
+  - Referrals
+  - Canada
+  - Webhook
+  tags_raw:
   - Healthcare
   - Electronic Medical Records
   - GraphQL
