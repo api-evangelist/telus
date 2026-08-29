@@ -22,6 +22,17 @@ description: >-
   Verification and SIM Swap network APIs reach developers indirectly through EnStream LP, the
   Bell/Rogers/TELUS identity joint venture, which feeds Aduna and from there CPaaS channels such as
   Vonage. TELUS is partner-gated and, for network APIs, reachable only through aggregators.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
 - Telecommunications
