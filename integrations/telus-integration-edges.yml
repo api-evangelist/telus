@@ -19,7 +19,51 @@ edges:
     api_families_basis: null
     detected_by: sweep-telco-network-apis.py
     detected: '2026-10-12'
+- partner_name: AgGateway (ADAPT / AgGateway standards)
+  partner: null
+  partner_match: register
+  type: register
+  direction: partner-built
+  evidence: https://aggateway.org/AboutUs/Members.aspx
+  category: farm data standards
+  channel: standard-directory
+  relationship: standard-participant
+  contract_reference:
+    register: AgGateway member list (aggateway.org/AboutUs/Members.aspx)
+    spec_file: null
+    standard: AgGateway (ADAPT, ISOXML/SPADE/PAIL, CIDX)
+    role: aggateway-member
+    registered_name: TELUS Agriculture
+    website: https://www.telus.com/en/on/agriculture
+    matched_domain: telus.com
+    matched_by: domain
+    signal_note: 'participation only: membership is not conformance'
+    detected_by: sweep-agriculture-food.py
+    detected: '2026-10-15'
+  detected_by: sweep-agriculture-food.py
+  first_seen: '2026-10-15'
+- partner_name: Climate FieldView (connected partners)
+  partner: climate-fieldview
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://climate.com/en-us/partners/telus.html
+  mirror_of: climate-fieldview/integrations/climate-fieldview-integration-edges.yml
+  apps:
+  - Telus Agronomy
+  detected: '2026-10-15'
+  detected_by: sweep-agriculture-food.py
 generated: '2026-10-12'
 method: searched
 checked:
+- https://aggateway.org/AboutUs/Members.aspx
+- https://agrirouter.com/en/solutions
+- https://climate.com/en-us/partners.html
 - https://raw.githubusercontent.com/camaraproject/camara-landscape/main/landscape.yml
+source:
+- https://aggateway.org/AboutUs/Members.aspx
+- https://agrirouter.com/en/solutions
