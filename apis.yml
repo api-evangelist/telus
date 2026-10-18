@@ -64,7 +64,7 @@ tags:
 - IoT
 - 5G
 - Healthcare
-- Electronic Medical Records
+- Electronic Health Records
 - GraphQL
 - Webhook
 - Geospatial
@@ -159,7 +159,7 @@ apis:
     introspection document at /enterprise-api/introspection.json was harvested verbatim into graphql/.
   tags:
   - Healthcare
-  - Electronic Medical Records
+  - Electronic Health Records
   - GraphQL
   - Appointments
   - Referrals
