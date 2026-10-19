@@ -27,3 +27,150 @@
     detected: '2026-10-12'
   status: not-a-workflow
   arazzo: null
+- slug: telus-aggateway-adapt-aggateway-standards
+  label: AgGateway (ADAPT / AgGateway standards)
+  partner_name: AgGateway (ADAPT / AgGateway standards)
+  category: farm data standards
+  type: register
+  channel: standard-directory
+  evidence: https://aggateway.org/AboutUs/Members.aspx
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: AgGateway member list (aggateway.org/AboutUs/Members.aspx)
+    spec_file: null
+    standard: AgGateway (ADAPT, ISOXML/SPADE/PAIL, CIDX)
+    role: aggateway-member
+    registered_name: TELUS Agriculture
+    website: https://www.telus.com/en/on/agriculture
+    matched_domain: telus.com
+    matched_by: domain
+    signal_note: 'participation only: membership is not conformance'
+    detected_by: sweep-agriculture-food.py
+    detected: '2026-10-15'
+  status: not-a-workflow
+  arazzo: null
+- slug: telus-climate-fieldview-connected-partners
+  label: Climate FieldView (connected partners)
+  partner: climate-fieldview
+  partner_name: Climate FieldView (connected partners)
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://climate.com/en-us/partners/telus.html
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: telus-npm-registry
+  label: npm registry
+  partner: npm
+  partner_name: npm registry
+  category: official SDK (JavaScript/TypeScript)
+  type: register
+  channel: package-registry
+  evidence: https://www.npmjs.com/package/@telus-uds/components-base
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@telus-uds/components-base'
+      version: 4.3.0
+      released: '2026-10-13'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/components-base
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/components-web'
+      version: 5.2.1
+      released: '2026-10-13'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/components-web
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/ds-allium'
+      version: 2.2.14
+      released: '2025-03-04'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/ds-allium
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/palette-allium'
+      version: 6.3.0
+      released: '2026-10-13'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/palette-allium
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/palette-koodo'
+      version: 4.0.1
+      released: '2026-07-14'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/palette-koodo
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/palette-public-mobile'
+      version: 4.0.1
+      released: '2026-08-10'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/palette-public-mobile
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/system-constants'
+      version: 4.0.0
+      released: '2026-06-08'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/system-constants
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/system-tokens'
+      version: 2.0.3
+      released: '2026-10-13'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/system-tokens
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus/create-library'
+      version: 1.16.3
+      released: '2024-02-15'
+      released_field: modified
+      lapsed: true
+      page: https://www.npmjs.com/package/@telus/create-library
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus/telus-standard'
+      version: 4.2.0
+      released: '2024-02-15'
+      released_field: modified
+      lapsed: true
+      page: https://www.npmjs.com/package/@telus/telus-standard
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null

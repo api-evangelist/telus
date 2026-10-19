@@ -57,13 +57,131 @@ edges:
   - Telus Agronomy
   detected: '2026-10-15'
   detected_by: sweep-agriculture-food.py
+- partner_name: npm registry
+  partner: npm
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript)
+  evidence: https://www.npmjs.com/package/@telus-uds/components-base
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@telus-uds/components-base'
+      version: 4.3.0
+      released: '2026-10-13'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/components-base
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/components-web'
+      version: 5.2.1
+      released: '2026-10-13'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/components-web
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/ds-allium'
+      version: 2.2.14
+      released: '2025-03-04'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/ds-allium
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/palette-allium'
+      version: 6.3.0
+      released: '2026-10-13'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/palette-allium
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/palette-koodo'
+      version: 4.0.1
+      released: '2026-07-14'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/palette-koodo
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/palette-public-mobile'
+      version: 4.0.1
+      released: '2026-08-10'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/palette-public-mobile
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/system-constants'
+      version: 4.0.0
+      released: '2026-06-08'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/system-constants
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus-uds/system-tokens'
+      version: 2.0.3
+      released: '2026-10-13'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@telus-uds/system-tokens
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus/create-library'
+      version: 1.16.3
+      released: '2024-02-15'
+      released_field: modified
+      lapsed: true
+      page: https://www.npmjs.com/package/@telus/create-library
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    - name: '@telus/telus-standard'
+      version: 4.2.0
+      released: '2024-02-15'
+      released_field: modified
+      lapsed: true
+      page: https://www.npmjs.com/package/@telus/telus-standard
+      repo_leg: github-org:telus
+      publisher_leg: email:telus.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
 generated: '2026-10-12'
 method: searched
 checked:
 - https://aggateway.org/AboutUs/Members.aspx
 - https://agrirouter.com/en/solutions
+- https://api.nuget.org/v3
 - https://climate.com/en-us/partners.html
+- https://crates.io/api/v1
+- https://proxy.golang.org
+- https://pypi.org/pypi
 - https://raw.githubusercontent.com/camaraproject/camara-landscape/main/landscape.yml
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
 source:
 - https://aggateway.org/AboutUs/Members.aspx
 - https://agrirouter.com/en/solutions
