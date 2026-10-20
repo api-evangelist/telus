@@ -19,44 +19,6 @@ edges:
     api_families_basis: null
     detected_by: sweep-telco-network-apis.py
     detected: '2026-10-12'
-- partner_name: AgGateway (ADAPT / AgGateway standards)
-  partner: null
-  partner_match: register
-  type: register
-  direction: partner-built
-  evidence: https://aggateway.org/AboutUs/Members.aspx
-  category: farm data standards
-  channel: standard-directory
-  relationship: standard-participant
-  contract_reference:
-    register: AgGateway member list (aggateway.org/AboutUs/Members.aspx)
-    spec_file: null
-    standard: AgGateway (ADAPT, ISOXML/SPADE/PAIL, CIDX)
-    role: aggateway-member
-    registered_name: TELUS Agriculture
-    website: https://www.telus.com/en/on/agriculture
-    matched_domain: telus.com
-    matched_by: domain
-    signal_note: 'participation only: membership is not conformance'
-    detected_by: sweep-agriculture-food.py
-    detected: '2026-10-15'
-  detected_by: sweep-agriculture-food.py
-  first_seen: '2026-10-15'
-- partner_name: Climate FieldView (connected partners)
-  partner: climate-fieldview
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://climate.com/en-us/partners/telus.html
-  mirror_of: climate-fieldview/integrations/climate-fieldview-integration-edges.yml
-  apps:
-  - Telus Agronomy
-  detected: '2026-10-15'
-  detected_by: sweep-agriculture-food.py
 - partner_name: npm registry
   partner: npm
   partner_match: register
@@ -168,6 +130,61 @@ edges:
     detected: '2026-10-18'
   detected_by: sweep-official-sdks.py
   first_seen: '2026-10-18'
+- partner_name: AgGateway (ADAPT / AgGateway standards)
+  partner: null
+  partner_match: register
+  type: register
+  direction: partner-built
+  evidence: https://aggateway.org/AboutUs/Members.aspx
+  category: farm data standards
+  channel: standard-directory
+  relationship: standard-participant
+  contract_reference:
+    register: AgGateway member list (aggateway.org/AboutUs/Members.aspx)
+    spec_file: null
+    standard: AgGateway (ADAPT, ISOXML/SPADE/PAIL, CIDX)
+    role: aggateway-member
+    registered_name: TELUS Agriculture
+    website: https://www.telus.com/en/on/agriculture
+    matched_domain: telus.com
+    matched_by: domain
+    signal_note: 'participation only: membership is not conformance'
+    detected_by: sweep-agriculture-food.py
+    detected: '2026-10-19'
+  detected_by: sweep-agriculture-food.py
+  first_seen: '2026-10-15'
+- partner_name: Climate FieldView (connected partners)
+  partner: climate-fieldview
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://climate.com/en-us/partners/telus.html
+  mirror_of: climate-fieldview/integrations/climate-fieldview-integration-edges.yml
+  apps:
+  - Telus Agronomy
+  detected: '2026-10-15'
+  detected_by: sweep-agriculture-food.py
+- partner_name: Zendesk (own)
+  partner: zendesk
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://www.zendesk.com/marketplace/apps/support/82924/telus-business-connect/
+  mirror_of: zendesk/integrations/zendesk-integration-edges.yml
+  apps:
+  - TELUS Business Connect
+  listing_count: 1
+  detected: '2026-10-20'
+  detected_by: mirror-platform-listings.py
+  category: Contact Center
 generated: '2026-10-12'
 method: searched
 checked:
@@ -182,6 +199,7 @@ checked:
 - https://registry.npmjs.org
 - https://repo1.maven.org/maven2
 - https://rubygems.org/api/v1
+- zendesk/integrations/zendesk-integration-edges.yml
 source:
 - https://aggateway.org/AboutUs/Members.aspx
 - https://agrirouter.com/en/solutions
