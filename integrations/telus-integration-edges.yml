@@ -200,6 +200,7 @@ checked:
 - https://repo1.maven.org/maven2
 - https://rubygems.org/api/v1
 - zendesk/integrations/zendesk-integration-edges.yml
+- https://www.aef-online.org/membership/memberlist.html
 source:
 - https://aggateway.org/AboutUs/Members.aspx
 - https://agrirouter.com/en/solutions
